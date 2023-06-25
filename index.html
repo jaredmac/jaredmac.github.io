@@ -1,48 +1,49 @@
 <html>  
 <head>  
-<script type="text/javascript" src="droplet.js"></script>  
-<style>
-    body {
-        background-color: black;
-        color: white;
-    }
+    <script type="text/javascript" src="droplet.js"></script>  
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
 
-    #header {
-        color: white;
-        font-size: 42px;
-        font-weight: bold;
-        margin: 40px auto;
-        text-align: center;
-    }
+        #header {
+            color: white;
+            font-size: 42px;
+            font-weight: bold;
+            margin: 40px auto;
+            text-align: center;
+        }
 
-    #board {
-        display: grid;
-        width: 440px;
-        grid-template-columns: repeat(4, 1fr);
-        grid-gap: 10px 10px;
-        margin: 0 auto;
-    }    
+        #board {
+            display: grid;
+            width: 440px;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px 10px;
+            margin: 0 auto;
+        }    
 
-    .tile {
-        color: white;
-        font-size: 36px;
-        font-weight: bold;
-        border: 1px solid gray;
-        height: 100px;
-        width: 100px;
-        text-align: center;
-        text-transform: uppercase;
-        line-height: 100px;
-    }
+        .tile {
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            border: 1px solid gray;
+            height: 100px;
+            width: 100px;
+            text-align: center;
+            text-transform: uppercase;
+            line-height: 100px;
+        }
 
-    .filled {
-        background: #222;
-    }
+        .filled {
+            background: #222;
+        }
 
-    .correct {
-        color: #33ff33;
-    }
-</style>
+        .correct {
+            color: #33ff33;
+        }
+    </style>
 </head>  
 <body onload="init()">
     <div id="header">
