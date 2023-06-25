@@ -41,7 +41,15 @@ class Board {
         this.grid[r][c].letter = ' ';
 
         const tile = document.createElement('div');
+        const b = this;
+        tile.addEventListener("click", function handleClick(e) {
+            b.dropAt(c);
+        });
+
         tile.classList.add('tile');
+        if (r == 0) {
+            tile.classList.add('currentTile');
+        }
         tile.textContent = this.grid[r][c].letter;
         this.grid[r][c].tile = tile;
         boardElem.appendChild(tile);
@@ -50,7 +58,7 @@ class Board {
     pickNextLetter() {
         const index = Math.floor(Math.random() * this.availableLetters.length);
         this.letter = this.availableLetters.charAt(index);
-        this.moveLeft();
+        this.setLetter(0, this.index, this.letter);
     }
 
     isBlank(r, c) {
@@ -80,28 +88,59 @@ class Board {
 
     move(newIndex) {
         this.clearLetter(0, this.index);
+        this.removeGlow(this.index);
         this.index = Math.max(Math.min(newIndex, this.cols - 1), 0);
         this.setLetter(0, this.index, this.letter);
+        this.addGlow(this.index);
+    }
+
+    removeGlow(c) {
+        let r = this.getAvailableRowInColumn(this.index);
+        if (r) {
+            this.grid[r][c].tile.classList.remove("glow");
+        }
+    }
+
+    addGlow(c) {
+        let r = this.getAvailableRowInColumn(this.index);
+        if (r) {
+            this.grid[r][c].tile.classList.add("glow");
+        }
     }
 
     drop() {
+        this.dropAt(this.index);
+    }
+
+    dropAt(c) {
+        let r = this.getAvailableRowInColumn(c);
+        if (r) {
+            this.removeGlow(c);
+            this.setLetter(r, c, this.letter);
+            let answerLetter = this.answers[r-1].charAt(c);
+            this.availableLetters = this.availableLetters.replace(this.letter, '');
+            if (r - 2 >= 0) {
+                this.availableLetters = this.availableLetters + this.answers[r - 2].charAt(c);
+            }
+            this.grid[r][c].tile.classList.add('filled');
+            if (this.letter == answerLetter) {
+                this.grid[r][c].tile.classList.add('correct');
+            } 
+            this.clearLetter(0, c);
+            this.pickNextLetter();
+        }
+    }
+    
+    /**
+     * Get the lowest available row in the given column.
+     */
+    getAvailableRowInColumn(c) {
         for (let r = this.grid.length - 1; r > 0; r--) {
-            if (this.isBlank(r, this.index)) {
-                this.setLetter(r, this.index, this.letter);
-                let answerLetter = this.answers[r-1].charAt(this.index);
-                this.availableLetters = this.availableLetters.replace(this.letter, '');
-                if (r - 2 >= 0) {
-                    this.availableLetters = this.availableLetters + this.answers[r - 2].charAt(this.index);
-                }
-                this.grid[r][this.index].tile.classList.add('filled');
-                if (this.letter == answerLetter) {
-                    this.grid[r][this.index].tile.classList.add('correct');
-                } 
-                this.clearLetter(0, this.index);
-                this.pickNextLetter();
-                break;
+            if (this.isBlank(r, c)) {
+                return r;
             }
         }
+        return null;
     }
 }
 

@@ -36,6 +36,16 @@ body {
     text-align: center;
     text-transform: uppercase;
     line-height: 80px;
+    box-sizing: border-box; /* to prevent "glow" from shifting the box */
+}
+
+.currentTile {
+    border: 0px;
+}
+
+.glow {
+    /* not sure if we want this yet */
+    /*border: 2px solid white;*/
 }
 
 .filled {
@@ -45,3 +55,4 @@ body {
 .correct {
     color: #33ff33;
 }
+
