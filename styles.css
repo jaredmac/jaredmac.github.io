@@ -40,11 +40,12 @@ body {
 }
 
 .currentTile {
-    border: 0px;
+    /* not sure if we want this */
+    /* border: 0px; */
 }
 
 .glow {
-    /* not sure if we want this yet */
+    /* not sure if we want this yet either */
     /*border: 2px solid white;*/
 }
 
