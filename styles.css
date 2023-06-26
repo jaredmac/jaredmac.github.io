@@ -1,4 +1,13 @@
 body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.light-mode {
+    background-color: white;
+    color: black;
+}
+
+.dark-mode {
     background-color: black;
     color: white;
 }
@@ -8,15 +17,23 @@ body {
 }
 
 #header {
-    color: white;
+    width: 8.5em;
+    height: 3em;
+    display: flex;
+    margin: 0 auto; /* center myself */
+    align-items: center; /* Vertically align items */
+    justify-content: center; /* Horizontally center items */
     font-size: 42px;
     font-weight: bold;
-    text-align: center;
-    padding: 20px 10px 40px 10px;
+    line-height: 30px;
 }
 
-#instructions {
-    padding: 10px;
+#header img {
+    max-width: 30px;
+}
+
+#header p {
+    flex-grow: 1;
 }
 
 #board {
@@ -39,9 +56,16 @@ body {
     box-sizing: border-box; /* to prevent "glow" from shifting the box */
 }
 
-.currentTile {
+.light-mode .currentTile {
     /* not sure if we want this */
     /* border: 0px; */
+    color: black;
+}
+
+.dark-mode .currentTile {
+    /* not sure if we want this */
+    /* border: 0px; */
+    color: white;
 }
 
 .glow {
@@ -49,11 +73,18 @@ body {
     /*border: 2px solid white;*/
 }
 
-.filled {
-    background: #222;
+.dark-mode .filled {
+    background: #333;
 }
 
-.correct {
-    color: #33ff33;
+.light-mode .filled {
+    background: #666;
 }
 
+.dark-mode .correct {
+    background: #007700;
+}
+
+.light-mode .correct {
+    background: #119911;
+}

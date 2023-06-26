@@ -1,8 +1,9 @@
 /*
- * - Upload to google pages
+ * - clickable left/right/down controls at bottom
+ * - restart button
  * - Satisfying splash animation when letter hits the bottom
- * - Correct bug about which letters you get 
  * - Satisfying success animation
+ * - dark/light theme
  */
 class Board {
     constructor(rows, cols, answers) {
@@ -95,17 +96,21 @@ class Board {
     }
 
     removeGlow(c) {
+        /*
         let r = this.getAvailableRowInColumn(this.index);
         if (r) {
             this.grid[r][c].tile.classList.remove("glow");
         }
+        */
     }
 
     addGlow(c) {
+        /*
         let r = this.getAvailableRowInColumn(this.index);
         if (r) {
             this.grid[r][c].tile.classList.add("glow");
         }
+        */
     }
 
     drop() {
@@ -144,7 +149,6 @@ class Board {
     }
 }
 
-
 function init() {
     const wordChoices = [
         ["COOK","STIR","CHOP","DICE"],
@@ -159,4 +163,15 @@ function init() {
     // Pick a set of words based on the day of the month
     const index = new Date().getDay() + 2;
     const b = new Board(5, 4, wordChoices[index % wordChoices.length]);
+}
+
+function toggleLightDark() {
+    let body = document.getElementsByTagName("body")[0];
+    if (body.classList.contains("light-mode")) {
+        body.classList.remove("light-mode");
+        body.classList.add("dark-mode");
+    } else {
+        body.classList.remove("dark-mode");
+        body.classList.add("light-mode");
+    }
 }
