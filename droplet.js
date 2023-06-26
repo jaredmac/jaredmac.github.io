@@ -1,9 +1,7 @@
 /*
  * - clickable left/right/down controls at bottom
- * - restart button
  * - Satisfying splash animation when letter hits the bottom
  * - Satisfying success animation
- * - dark/light theme
  */
 class Board {
     constructor(rows, cols, answers) {
