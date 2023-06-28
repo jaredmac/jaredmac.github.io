@@ -2,17 +2,20 @@
  * - clickable left/right/down controls at bottom
  * - Satisfying splash animation when letter hits the bottom
  * - Satisfying success animation
+ * - Make dark mode stick
+ * - Make the reset button not refresh
  */
 class Board {
     constructor(rows, cols, answers) {
         this.cols = cols;
         this.rows = rows;
-        this.grid = new Array(rows);
         this.index = 0;
         this.answers = answers;
         this.availableLetters = answers[3];
-
+        this.attempts = 0;
         var boardElem = document.getElementById('board');
+
+        this.grid = new Array(rows);
         for (let r = 0; r < rows; r++) {
 			this.grid[r] = new Array(cols);
 			for (let c = 0; c < this.grid[r].length; c++) {
@@ -21,7 +24,6 @@ class Board {
 		}
 
         this.pickNextLetter();
-        this.moveLeft();
 
         const b = this;
         window.addEventListener("keydown", function handleKeyDown(e) {
@@ -33,6 +35,16 @@ class Board {
                 b.drop();
             }
         });
+    }
+
+    tryAgain() {
+        this.availableLetters = this.answers[3];
+        for (let r = 0; r < this.rows; r++) {
+			for (let c = 0; c < this.cols; c++) {
+                this.clearLetter(r, c);
+            }
+		}
+        this.pickNextLetter();
     }
 
     createBlankTile(boardElem, r, c) {
@@ -74,7 +86,9 @@ class Board {
     }
 
     clearLetter(r, c) {
-        this.setLetter(0, this.index, ' ');
+        this.setLetter(r, c, ' ');
+        this.grid[r][c].tile.classList.remove('filled');
+        this.grid[r][c].tile.classList.remove('correct');
     }
 
     moveLeft() {
@@ -87,28 +101,8 @@ class Board {
 
     move(newIndex) {
         this.clearLetter(0, this.index);
-        this.removeGlow(this.index);
         this.index = Math.max(Math.min(newIndex, this.cols - 1), 0);
         this.setLetter(0, this.index, this.letter);
-        this.addGlow(this.index);
-    }
-
-    removeGlow(c) {
-        /*
-        let r = this.getAvailableRowInColumn(this.index);
-        if (r) {
-            this.grid[r][c].tile.classList.remove("glow");
-        }
-        */
-    }
-
-    addGlow(c) {
-        /*
-        let r = this.getAvailableRowInColumn(this.index);
-        if (r) {
-            this.grid[r][c].tile.classList.add("glow");
-        }
-        */
     }
 
     drop() {
@@ -118,7 +112,6 @@ class Board {
     dropAt(c) {
         let r = this.getAvailableRowInColumn(c);
         if (r) {
-            this.removeGlow(c);
             this.setLetter(r, c, this.letter);
             let answerLetter = this.answers[r-1].charAt(c);
             this.availableLetters = this.availableLetters.replace(this.letter, '');
@@ -129,7 +122,6 @@ class Board {
             if (this.letter == answerLetter) {
                 this.grid[r][c].tile.classList.add('correct');
             } 
-            this.clearLetter(0, c);
             this.pickNextLetter();
         }
     }
@@ -147,6 +139,10 @@ class Board {
     }
 }
 
+var globals = {
+
+};
+
 function init() {
     const wordChoices = [
         ["COOK","STIR","CHOP","DICE"],
@@ -155,12 +151,20 @@ function init() {
         ["CARS","ROAD","LANE","MILE"],
         ["INCH","FOOT","YARD","MILE"],
         ["DRUM","BASS","KICK","ROCK"],
-        ["BABY","TOYS","CRIB","PLAY"]
+        ["BABY","TOYS","CRIB","PLAY"],
+        ["BLUE","GRAY","PINK","CYAN"],
+        ["HAND","FOOT","HEAD","FACE"]
     ];
 
-    // Pick a set of words based on the day of the month
-    const index = new Date().getDay() + 2;
-    const b = new Board(5, 4, wordChoices[index % wordChoices.length]);
+    // Pick a set of words based on the URL param for now, or on the day of the month if none is provided
+    const url = new URL(window.location.toLocaleString()).searchParams;
+    const id = url.get('id');
+    const index = id ? parseInt(id) : new Date().getDay();
+    globals.b = new Board(5, 4, wordChoices[index % wordChoices.length]);
+}
+
+function tryAgain() {
+    globals.b.tryAgain();
 }
 
 function toggleLightDark() {
@@ -172,4 +176,21 @@ function toggleLightDark() {
         body.classList.remove("dark-mode");
         body.classList.add("light-mode");
     }
+}
+
+function startGame() {
+    fadeOut(document.getElementById("intro"));
+}
+
+function fadeOut(element) {
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            element.style.display = 'none';
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 20);
 }

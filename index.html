@@ -1,17 +1,28 @@
 <html>  
 <head>  
-    <title>Droplet</title>
+    <title>Droplet by Jared MacDonald</title>
     <link rel="stylesheet" href="styles.css">
     <script src="droplet.js"></script>  
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>  
 <body class="light-mode" onload="init()">
+
+    <!-- Disappearing intro screen -->
+    <div id="header">
+        <img src="dark_light.svg" onclick="toggleLightDark()">
+        <span>Droplet</span>
+        <img src="refresh.svg" onclick="tryAgain()">
+    </div>
+    <div id="intro">
+        <div id="instructions">
+            <p>Drop letters into four related words of four letters each.</p>
+            <p>See how many attempts it takes to get it right!</p>
+            <p><span id="playButton" onclick="startGame()">Play</span></p>
+        </div> 
+    </div>
+
+    <!-- Game screen -->
     <div id="content">
-        <div id="header">
-            <img src="dark_light.svg" onclick="toggleLightDark()">
-            <p>Droplet</p> 
-            <img src="refresh.svg" onclick="location.reload()">
-        </div>
         <div id="board">
         </div>
     </div>
