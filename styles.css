@@ -106,43 +106,41 @@ body {
     text-align: center;
     text-transform: uppercase;
     line-height: 80px;
-    box-sizing: border-box; /* to prevent "glow" from shifting the box */
+    box-sizing: border-box; /* to prevent "available" from shifting the box */
 }
 
 .currentTile {
     border: 0;
-
 }
 
 .light-mode .currentTile {
-    /* not sure if we want this */
-    /* border: 0px; */
     color: black;
 }
 
 .dark-mode .currentTile {
-    /* not sure if we want this */
-    /* border: 0px; */
     color: white;
 }
 
-.glow {
-    /* not sure if we want this yet either */
-    /*border: 2px solid white;*/
+.available {
+    border: 4px solid green;
 }
 
 .dark-mode .filled {
     background: #333;
+    border: 4px solid #333;
 }
 
 .light-mode .filled {
     background: #666;
+    border: 4px solid #666;
 }
 
 .dark-mode .correct {
     background: #007700;
+    border: 4px solid #007700;
 }
 
 .light-mode .correct {
     background: #119911;
+    border: 4px solid #119911;
 }

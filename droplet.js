@@ -1,9 +1,8 @@
 /*
- * - clickable left/right/down controls at bottom
+ * - easy mode and hard mode
  * - Satisfying splash animation when letter hits the bottom
  * - Satisfying success animation
  * - Make dark mode stick
- * - Make the reset button not refresh
  */
 class Board {
     constructor(rows, cols, answers) {
@@ -67,9 +66,18 @@ class Board {
     }
 
     pickNextLetter() {
+        // Pick next letter
         const index = Math.floor(Math.random() * this.availableLetters.length);
         this.letter = this.availableLetters.charAt(index);
         this.setLetter(0, this.index, this.letter);
+
+        // Update available locations
+        for (let c = 0; c < this.cols; c++) {
+            let r = this.getAvailableRowInColumn(c);
+            if (r) {    
+                this.grid[r][c].tile.classList.add('available');
+            }
+        }
     }
 
     isBlank(r, c) {
@@ -89,6 +97,7 @@ class Board {
         this.setLetter(r, c, ' ');
         this.grid[r][c].tile.classList.remove('filled');
         this.grid[r][c].tile.classList.remove('correct');
+        this.grid[r][c].tile.classList.remove('available');
     }
 
     moveLeft() {
@@ -180,6 +189,7 @@ function toggleLightDark() {
 
 function startGame() {
     fadeOut(document.getElementById("intro"));
+    s
 }
 
 function fadeOut(element) {
