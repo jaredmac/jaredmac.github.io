@@ -1,5 +1,6 @@
 /*
- * - easy mode and hard mode
+ * - add an animation on the intro screen showing how it works
+ * - easy mode and hard mode: easy you get to replace the tiles?
  * - Satisfying splash animation when letter hits the bottom
  * - Satisfying success animation
  * - Make dark mode stick
@@ -12,7 +13,7 @@ class Board {
         this.answers = answers;
         this.availableLetters = answers[3];
         this.attempts = 0;
-        var boardElem = document.getElementById('board');
+        let boardElem = document.getElementById('board');
 
         this.grid = new Array(rows);
         for (let r = 0; r < rows; r++) {
@@ -71,7 +72,7 @@ class Board {
         this.letter = this.availableLetters.charAt(index);
         this.setLetter(0, this.index, this.letter);
 
-        // Update available locations
+        // Update available grid locations
         for (let c = 0; c < this.cols; c++) {
             let r = this.getAvailableRowInColumn(c);
             if (r) {    
@@ -152,7 +153,7 @@ var globals = {
 
 };
 
-function init() {
+function init(daily) {
     const wordChoices = [
         ["COOK","STIR","CHOP","DICE"],
         ["RICE","BEAN","TACO","CHIP"],
@@ -165,10 +166,7 @@ function init() {
         ["HAND","FOOT","HEAD","FACE"]
     ];
 
-    // Pick a set of words based on the URL param for now, or on the day of the month if none is provided
-    const url = new URL(window.location.toLocaleString()).searchParams;
-    const id = url.get('id');
-    const index = id ? parseInt(id) : new Date().getDay();
+    const index = daily ? new Date().getDay() : Math.floor(Math.random() * 1024);
     globals.b = new Board(5, 4, wordChoices[index % wordChoices.length]);
 }
 
@@ -187,9 +185,9 @@ function toggleLightDark() {
     }
 }
 
-function startGame() {
+function startGame(daily) {
+    init(daily);
     fadeOut(document.getElementById("intro"));
-    s
 }
 
 function fadeOut(element) {
