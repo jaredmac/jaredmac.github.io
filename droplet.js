@@ -1,10 +1,53 @@
 /*
  * - add an animation on the intro screen showing how it works
  * - easy mode and hard mode: easy you get to replace the tiles?
- * - Satisfying splash animation when letter hits the bottom
  * - Satisfying success animation
  * - Make dark mode stick
  */
+class Tile {
+    constructor(boardElem, r, c) {
+        this.letter = ' ';
+        this.tile = document.createElement('div');
+        this.tile.classList.add('tile');
+        this.correct = false;
+
+        if (r == 0) {
+            this.tile.classList.add('currentTile');
+        }
+        this.tile.textContent = this.letter;
+        boardElem.appendChild(this.tile);
+    }
+
+    isCorrect() {
+        return this.correct;
+    }
+
+    dropLetter(letter, correctLetter) {
+        this.setLetter(letter);
+        this.tile.classList.add('filled');
+        if (letter == correctLetter) {
+            this.tile.classList.add('correct');
+            this.correct = true;
+        } 
+    }
+
+    setLetter(l) {
+        this.letter = l;
+        this.tile.textContent = l;
+    }
+
+    clearLetter() {
+        this.setLetter(' ');
+        this.tile.classList.remove('filled');
+        this.tile.classList.remove('correct');
+        this.tile.classList.remove('available');
+    }
+
+    setAvailable() {
+        this.tile.classList.add('available');
+    }
+}
+
 class Board {
     constructor(rows, cols, answers) {
         this.cols = cols;
@@ -39,46 +82,53 @@ class Board {
 
     tryAgain() {
         this.availableLetters = this.answers[3];
-        for (let r = 0; r < this.rows; r++) {
-			for (let c = 0; c < this.cols; c++) {
-                this.clearLetter(r, c);
+        for (let r of this.grid) {
+			for (let c of r) {
+                c.clearLetter();
             }
 		}
         this.pickNextLetter();
     }
 
     createBlankTile(boardElem, r, c) {
-        this.grid[r][c] = {};
-        this.grid[r][c].letter = ' ';
+        this.grid[r][c] = new Tile(boardElem, r, c);
 
-        const tile = document.createElement('div');
+        // TODO: Fix me
         const b = this;
-        tile.addEventListener("click", function handleClick(e) {
+        this.grid[r][c].tile.addEventListener("click", function handleClick(e) {
             b.dropAt(c);
         });
-
-        tile.classList.add('tile');
-        if (r == 0) {
-            tile.classList.add('currentTile');
-        }
-        tile.textContent = this.grid[r][c].letter;
-        this.grid[r][c].tile = tile;
-        boardElem.appendChild(tile);
     }
 
     pickNextLetter() {
-        // Pick next letter
-        const index = Math.floor(Math.random() * this.availableLetters.length);
-        this.letter = this.availableLetters.charAt(index);
-        this.setLetter(0, this.index, this.letter);
+        if (this.availableLetters.length == 0) {
+            this.endGame();
+        } else {
+            // Pick next letter
+            const index = Math.floor(Math.random() * this.availableLetters.length);
+            this.letter = this.availableLetters.charAt(index);
+            this.setLetter(0, this.index, this.letter);
 
-        // Update available grid locations
-        for (let c = 0; c < this.cols; c++) {
-            let r = this.getAvailableRowInColumn(c);
-            if (r) {    
-                this.grid[r][c].tile.classList.add('available');
+            // Update available grid locations
+            for (let c = 0; c < this.cols; c++) {
+                let r = this.getAvailableRowInColumn(c);
+                if (r) {    
+                    this.grid[r][c].setAvailable();
+                }
             }
         }
+    }
+
+    endGame() {
+        var correct = true;
+        for (let c = 0; c < this.cols; c++) {
+            for (let r = 1; r < this.rows; r++) {
+                if (!this.grid[r][c].isCorrect()) {
+                    correct = false;
+                } 
+            }
+        }
+        console.log("the end: " + correct);
     }
 
     isBlank(r, c) {
@@ -90,15 +140,7 @@ class Board {
     }
 
     setLetter(r, c, l) {
-        this.grid[r][c].letter = l;
-        this.grid[r][c].tile.textContent = l;
-    }
-
-    clearLetter(r, c) {
-        this.setLetter(r, c, ' ');
-        this.grid[r][c].tile.classList.remove('filled');
-        this.grid[r][c].tile.classList.remove('correct');
-        this.grid[r][c].tile.classList.remove('available');
+        this.grid[r][c].setLetter(l);
     }
 
     moveLeft() {
@@ -110,7 +152,7 @@ class Board {
     }
 
     move(newIndex) {
-        this.clearLetter(0, this.index);
+        this.grid[0][this.index].clearLetter();
         this.index = Math.max(Math.min(newIndex, this.cols - 1), 0);
         this.setLetter(0, this.index, this.letter);
     }
@@ -122,16 +164,12 @@ class Board {
     dropAt(c) {
         let r = this.getAvailableRowInColumn(c);
         if (r) {
-            this.setLetter(r, c, this.letter);
             let answerLetter = this.answers[r-1].charAt(c);
+            this.grid[r][c].dropLetter(this.letter, answerLetter);
             this.availableLetters = this.availableLetters.replace(this.letter, '');
             if (r - 2 >= 0) {
                 this.availableLetters = this.availableLetters + this.answers[r - 2].charAt(c);
             }
-            this.grid[r][c].tile.classList.add('filled');
-            if (this.letter == answerLetter) {
-                this.grid[r][c].tile.classList.add('correct');
-            } 
             this.pickNextLetter();
         }
     }
