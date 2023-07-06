@@ -2,14 +2,14 @@
  * - add an animation on the intro screen showing how it works
  * - easy mode and hard mode: easy you get to replace the tiles?
  * - Satisfying success animation
- * - Make dark mode stick
  */
 class Tile {
-    constructor(boardElem, r, c) {
+    constructor(boardElem, r, listener) {
         this.letter = ' ';
         this.tile = document.createElement('div');
         this.tile.classList.add('tile');
         this.correct = false;
+        this.listener = listener;
 
         if (r == 0) {
             this.tile.classList.add('currentTile');
@@ -34,6 +34,7 @@ class Tile {
     setLetter(l) {
         this.letter = l;
         this.tile.textContent = l;
+        this.tile.removeEventListener('click', this.listener);
     }
 
     clearLetter() {
@@ -45,6 +46,7 @@ class Tile {
 
     setAvailable() {
         this.tile.classList.add('available');
+        this.tile.addEventListener('click', this.listener);
     }
 }
 
@@ -91,11 +93,8 @@ class Board {
     }
 
     createBlankTile(boardElem, r, c) {
-        this.grid[r][c] = new Tile(boardElem, r, c);
-
-        // TODO: Fix me
         const b = this;
-        this.grid[r][c].tile.addEventListener("click", function handleClick(e) {
+        this.grid[r][c] = new Tile(boardElem, r, function handleClick(e) {
             b.dropAt(c);
         });
     }
@@ -212,14 +211,23 @@ function tryAgain() {
     globals.b.tryAgain();
 }
 
+function initColors() {
+    const colorMode = localStorage.getItem("colorMode");
+    if (colorMode == "dark") {
+        toggleLightDark();
+    }
+}
+
 function toggleLightDark() {
-    let body = document.getElementsByTagName("body")[0];
+    let body = document.body;
     if (body.classList.contains("light-mode")) {
         body.classList.remove("light-mode");
         body.classList.add("dark-mode");
+        localStorage.setItem("colorMode", "dark");
     } else {
         body.classList.remove("dark-mode");
         body.classList.add("light-mode");
+        localStorage.setItem("colorMode", "light");
     }
 }
 
