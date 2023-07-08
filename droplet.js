@@ -208,7 +208,12 @@ function init(daily) {
         ["DRUM","BASS","KICK","ROCK"],
         ["BABY","TOYS","CRIB","PLAY"],
         ["BLUE","GRAY","PINK","CYAN"],
-        ["HAND","FOOT","HEAD","FACE"]
+        ["HAND","FOOT","HEAD","FACE"],
+        ["PINE","PLUM","PEAR","PALM"],
+        ["AIDA","CATS","RENT","HAIR"],
+        ["KIRK","AHAB","NEMO","HOOK"],
+        ["TREK","WARS","DUST","GATE"],
+        ["DUNE","JAWS","ARGO","CUJO"]
     ];
 
     const index = daily ? new Date().getDay() : Math.floor(Math.random() * 1024);
