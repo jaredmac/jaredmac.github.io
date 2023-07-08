@@ -4,10 +4,15 @@
  * - Satisfying success animation
  */
 class Tile {
-    constructor(boardElem, r, listener) {
+    constructor(boardElem, r, gridSize, listener) {
         this.letter = ' ';
         this.tile = document.createElement('div');
         this.tile.classList.add('tile');
+        this.tile.style.height = gridSize + 'px';
+        this.tile.style.width = gridSize + 'px';
+        this.tile.style.lineHeight = gridSize + 'px';
+        this.tile.style.fontSize = Math.floor(gridSize / 2) + 'px';
+        
         this.correct = false;
         this.listener = listener;
 
@@ -51,24 +56,24 @@ class Tile {
 }
 
 class Board {
-    constructor(rows, cols, answers) {
-        this.cols = cols;
-        this.rows = rows;
+    constructor(el, answers, gridSize) {
+        this.rows = 5;
+        this.cols = 4;
         this.index = 0;
         this.answers = answers;
         this.availableLetters = answers[3];
         this.attempts = 0;
-        let boardElem = document.getElementById('board');
+        let boardElem = el;
+        boardElem.style.gridTemplateColumns = 'repeat(4, ' + gridSize + 'px)';
+        boardElem.style.gridGap = (gridSize / 8) + 'px';
 
-        this.grid = new Array(rows);
-        for (let r = 0; r < rows; r++) {
-			this.grid[r] = new Array(cols);
+        this.grid = new Array(this.rows);
+        for (let r = 0; r < this.rows; r++) {
+			this.grid[r] = new Array(this.cols);
 			for (let c = 0; c < this.grid[r].length; c++) {
-                this.createBlankTile(boardElem, r, c);
+                this.createBlankTile(boardElem, r, c, gridSize);
             }
 		}
-
-        this.pickNextLetter();
 
         const b = this;
         window.addEventListener("keydown", function handleKeyDown(e) {
@@ -89,31 +94,30 @@ class Board {
                 c.clearLetter();
             }
 		}
-        this.pickNextLetter();
+        this.pickNextLetterAtRandom();
     }
 
-    createBlankTile(boardElem, r, c) {
+    createBlankTile(boardElem, r, c, gridSize) {
         const b = this;
-        this.grid[r][c] = new Tile(boardElem, r, function handleClick(e) {
+        this.grid[r][c] = new Tile(boardElem, r, gridSize, function handleClick(e) {
             b.dropAt(c);
         });
     }
 
-    pickNextLetter() {
-        if (this.availableLetters.length == 0) {
-            this.endGame();
-        } else {
-            // Pick next letter
-            const index = Math.floor(Math.random() * this.availableLetters.length);
-            this.letter = this.availableLetters.charAt(index);
-            this.setLetter(0, this.index, this.letter);
+    pickNextLetterAtRandom() {
+        const index = Math.floor(Math.random() * this.availableLetters.length);
+        this.pickNextLetter(this.availableLetters.charAt(index));
+    }
 
-            // Update available grid locations
-            for (let c = 0; c < this.cols; c++) {
-                let r = this.getAvailableRowInColumn(c);
-                if (r) {    
-                    this.grid[r][c].setAvailable();
-                }
+    pickNextLetter(l) {
+        this.letter = l;
+        this.setLetter(0, this.index, this.letter);
+
+        // Update available grid locations
+        for (let c = 0; c < this.cols; c++) {
+            let r = this.getAvailableRowInColumn(c);
+            if (r) {    
+                this.grid[r][c].setAvailable();
             }
         }
     }
@@ -169,7 +173,11 @@ class Board {
             if (r - 2 >= 0) {
                 this.availableLetters = this.availableLetters + this.answers[r - 2].charAt(c);
             }
-            this.pickNextLetter();
+            if (this.availableLetters.length == 0) {
+                this.endGame();
+            } else { 
+                this.pickNextLetterAtRandom();
+            }
         }
     }
     
@@ -204,7 +212,10 @@ function init(daily) {
     ];
 
     const index = daily ? new Date().getDay() : Math.floor(Math.random() * 1024);
-    globals.b = new Board(5, 4, wordChoices[index % wordChoices.length]);
+    globals.b = new Board(document.getElementById('board'), 
+        wordChoices[index % wordChoices.length],
+        80);
+    globals.b.pickNextLetterAtRandom();
 }
 
 function tryAgain() {

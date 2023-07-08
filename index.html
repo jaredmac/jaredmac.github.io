@@ -3,9 +3,10 @@
     <title>Droplet by Jared MacDonald</title>
     <link rel="stylesheet" href="styles.css">
     <script src="droplet.js"></script>  
+    <script src="intro.js"></script>  
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>  
-<body class="light-mode" onload="initColors()";>
+<body class="light-mode" onload="initColors(); new Intro()";>
 
     <!-- Disappearing intro screen -->
     <div id="header">
@@ -16,6 +17,7 @@
     <div id="intro">
         <div id="instructions">
             <p>Drop letters into four thematic words of four letters each.</p>
+                <div id="intro-board" class="board"></div>
             <p>See how many attempts it takes to get it right!</p>
             <p>
                 <button id="playButton" onclick="startGame(true)">Daily</button>
@@ -26,7 +28,7 @@
 
     <!-- Game screen -->
     <div id="content">
-        <div id="board">
+        <div id="board" class="board">
         </div>
     </div>
 </body>  

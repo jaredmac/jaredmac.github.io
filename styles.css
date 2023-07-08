@@ -28,6 +28,11 @@ body {
     padding-right: 1em;
 }
 
+#intro #canvas-container {
+    display: flex;
+    align-items: center;
+}
+
 .light-mode #intro {
     background: #eee;
 }
@@ -81,23 +86,17 @@ body {
     flex-grow: 1;
 }
 
-#board {
+.board {
     display: grid;
-    grid-template-columns: repeat(4, 80px);
-    grid-gap: 10px;
     justify-content: center;
 }    
 
 .tile {
     color: white;
-    font-size: 36px;
     font-weight: bold;
     border: 1px solid gray;
-    height: 80px;
-    width: 80px;
     text-align: center;
     text-transform: uppercase;
-    line-height: 80px;
     box-sizing: border-box; /* to prevent "available" from shifting the box */
 }
 
