@@ -73,7 +73,7 @@ body {
     margin: 0 auto; /* center myself */
     align-items: center; /* Vertically align items */
     justify-content: center; /* Horizontally center items */
-    font-size: 42px;
+    font-size: 36px;
     font-weight: bold;
     padding: .5em 0 .4em 0;
 }
@@ -91,6 +91,29 @@ body {
     justify-content: center;
 }    
 
+.currentLetter {
+    margin: 0 auto;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.dropAnimation {
+    animation-name: drop;
+    animation-duration: 1s;
+}
+
+@keyframes drop {
+    50% {
+        transform: translate(60px);
+    }
+
+    to {
+        transform: translate(60px,140px);
+    }
+}
+
 .tile {
     color: white;
     font-weight: bold;
@@ -98,10 +121,6 @@ body {
     text-align: center;
     text-transform: uppercase;
     box-sizing: border-box; /* to prevent "available" from shifting the box */
-}
-
-.currentTile {
-    border: 0;
 }
 
 .light-mode .currentTile {
