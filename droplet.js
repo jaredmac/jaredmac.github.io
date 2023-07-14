@@ -142,11 +142,11 @@ class Board {
             }
         }
 
-        if (this.interactive/* && correct*/) {
+        if (this.interactive && correct) {
             // Display the number of tries
             var tryEl = document.getElementById("tries");
             tryEl.textContent = this.attempt;
-            tryEl.textContent += this.attempt == 1 ? " try!" : "tries!";
+            tryEl.textContent += this.attempt == 1 ? " try!" : " tries!";
 
             // Display the theme
             var themeEl = document.getElementById("theme");
