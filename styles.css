@@ -6,7 +6,7 @@ body {
 
 .light-mode {
     background-color: white;
-    color: black;
+    color: #333;
 }
 
 .dark-mode {
@@ -41,8 +41,8 @@ body {
     background: #222;
 }
 
-#playButton {
-    font-size: .8em;
+.button {
+    font-size: 18px;
     border: 1px solid #333;
     border-radius: 1.5em;
     padding: 10px 16px;
@@ -51,12 +51,12 @@ body {
     cursor: hand;
 }
 
-.light-mode #playButton {
+.light-mode .button {
     color: black;
     background: white;
 }
 
-.dark-mode #playButton {
+.dark-mode .button {
     color: white;
     background: black;
 }
@@ -170,4 +170,39 @@ body {
     to {
         transform: scale(1);
     }
+}
+
+/* game over dialog */
+.modalDialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    opacity: 0;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+}
+
+.light-mode .modalDialog > div {
+    color: black;
+    background-color: #ccc;
+}
+
+.dark-mode .modalDialog > div {
+    color: white;
+    background-color: #222;
+}
+
+.modalDialog > div {
+    width: 250px;
+    position: relative;
+    margin: 10% auto;
+    padding: 5px 20px 13px 20px;
+    border-radius: 10px;
+    border: black;
 }

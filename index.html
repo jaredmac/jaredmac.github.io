@@ -8,20 +8,22 @@
 </head>  
 <body class="light-mode" onload="initColors(); new Intro()";>
 
-    <!-- Disappearing intro screen -->
+    <!-- Fixed header -->
     <div id="header">
         <img src="dark_light.svg" onclick="toggleLightDark()">
         <span>Droplet</span>
         <img src="refresh.svg" onclick="tryAgain()">
     </div>
+
+    <!-- Disappearing intro screen -->
     <div id="intro">
         <div id="instructions">
             <p>Drop letters into four thematic words of four letters each.</p>
                 <div id="intro-board"></div>
             <p>See how many attempts it takes to get it right!</p>
             <p>
-                <button id="playButton" onclick="startGame(true)">Daily</button>
-                <button id="playButton" onclick="startGame(false)">Random</button>
+                <button class="button" onclick="startGame(true)">Daily</button>
+                <button class="button" onclick="startGame(false)">Random</button>
             </p>
         </div> 
     </div>
@@ -29,6 +31,17 @@
     <!-- Game screen -->
     <div id="content">
         <div id="board">
+        </div>
+        
+        <!-- Game over dialog -->
+        <div id="openModal" class="modalDialog">
+            <div>
+              <h2>Congratulations!</h2>
+              <p>You solved it in <span id="tries"></span></p>
+              <p>This puzzle's theme was <span id="theme"></span>.</p>
+              <button class="button" onclick="location.reload()">Restart</button>
+            </div>
+          </div>
         </div>
     </div>
 </body>  

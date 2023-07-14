@@ -1,7 +1,7 @@
 /*
- * - center the letter
  * - easy mode and hard mode: easy you get to replace the tiles?
  * - Satisfying success animation
+ * - Done screen: reveal the theme, show the count, show the average
  */
 
 function createLetterElement(size, clazz) {
@@ -57,8 +57,11 @@ class Tile {
 }
 
 class Board {
-    constructor(el, answers, gridSize) {
+    constructor(el, answers, theme, gridSize) {
         this.answers = answers;
+        this.theme = theme;
+        this.attempt = 1;
+        this.interactive = true;
         this.resetAvailableLetters();
 
         // Create the current letter above the board
@@ -81,11 +84,16 @@ class Board {
 		}
     }
 
+    setNonInteractive() {
+        this.interactive = false;
+    }
+
     resetAvailableLetters() {
         this.availableLetters = this.answers[3];
     }
 
     tryAgain() {
+        this.attempt++;
         for (let r of this.grid) {
 			for (let c of r) {
                 c.clearLetter();
@@ -133,6 +141,23 @@ class Board {
                 } 
             }
         }
+
+        if (this.interactive/* && correct*/) {
+            // Display the number of tries
+            var tryEl = document.getElementById("tries");
+            tryEl.textContent = this.attempt;
+            tryEl.textContent += this.attempt == 1 ? " try!" : "tries!";
+
+            // Display the theme
+            var themeEl = document.getElementById("theme");
+            themeEl.style.fontWeight = 'bold';
+            themeEl.textContent = this.theme;
+
+            // Show the congratulations dialog
+            var dialog = document.getElementById("openModal");
+            dialog.style.opacity = 1;
+            dialog.style.pointerEvents = 'auto';
+        }
     }
 
     isBlank(r, c) {
@@ -143,8 +168,6 @@ class Board {
         let r = this.getAvailableRowInColumn(c);
         if (r != -1) {
             let correctLetter = this.answers[r].charAt(c);
-
-            //this.letterElem.classList.add('dropAnimation');
 
             this.grid[r][c].dropLetter(this.letter, correctLetter);
             this.availableLetters = this.availableLetters.replace(this.letter, '');
@@ -179,29 +202,30 @@ var globals = {
 
 function init(daily) {
     const wordChoices = [
-        ["COOK","STIR","CHOP","DICE"],
-        ["RICE","BEAN","TACO","CHIP"],
-        ["KICK","BALL","GOAL","CLUB"],
-        ["CARS","ROAD","LANE","MILE"],
-        ["INCH","FOOT","YARD","MILE"],
-        ["DRUM","BASS","KICK","ROCK"],
-        ["MIST","RAIN","HAIL","SNOW"],
-        ["BABY","TOYS","CRIB","PLAY"],
-        ["BLUE","GRAY","PINK","CYAN"],
-        ["HAND","FOOT","HEAD","FACE"],
-        ["PINE","PLUM","PEAR","PALM"],
-        ["AIDA","CATS","RENT","HAIR"],
-        ["KIRK","AHAB","NEMO","HOOK"],
-        ["TREK","WARS","DUST","GATE"],
-        ["DUNE","JAWS","ARGO","CUJO"],
-        ["BOLT","PINS","NAIL","GLUE"],
-        ["NICE","OSLO","NUUK","KIEV"],
-        ["RENO","ERIE","MESA","HILO"]
+        ["COOK","STIR","CHOP","DICE", "cooking"],
+        ["RICE","BEAN","TACO","CHIP", "Mexican food"],
+        ["KICK","BALL","GOAL","CLUB", "soccer/football"],
+        ["CARS","ROAD","LANE","MILE", "driving"],
+        ["INCH","FOOT","YARD","MILE", "units of measure"],
+        ["MIST","RAIN","HAIL","SNOW", "precipitation"],
+        ["BABY","TOYS","CRIB","PLAY", "baby things"],
+        ["BLUE","GRAY","PINK","CYAN", "colors"],
+        ["HAND","FOOT","HEAD","FACE", "body parts"],
+        ["PINE","PLUM","PEAR","PALM", "trees that start with 'P'"],
+        ["AIDA","CATS","RENT","HAIR", "musicals"],
+        ["KIRK","AHAB","NEMO","HOOK", "captains"],
+        ["TREK","WARS","DUST","GATE", "types of star"],
+        ["DUNE","JAWS","ARGO","CUJO", "movies"],
+        ["BOLT","PINS","NAIL","GLUE", "fasteners"],
+        ["NICE","OSLO","NUUK","KIEV", "European cities"],
+        ["RENO","ERIE","MESA","HILO", "US cities"]
     ];
 
-    const index = daily ? new Date().getDay() : Math.floor(Math.random() * 1024);
+    const index = daily ? new Date().getDay() : Math.floor(Math.random() * 91);
+    const i = index % wordChoices.length;
     globals.b = new Board(document.getElementById('board'), 
-        wordChoices[index % wordChoices.length],
+        wordChoices[i].slice(0, 4),
+        wordChoices[i].slice(4)[0],
         80);
     globals.b.pickNextLetterAtRandom();
 }
@@ -236,9 +260,9 @@ function startGame(daily) {
 }
 
 function fadeOut(element) {
-    var op = 1;  // initial opacity
+    var op = 1;
     var timer = setInterval(function () {
-        if (op <= 0.1){
+        if (op <= 0.1) {
             clearInterval(timer);
             element.style.display = 'none';
         }
