@@ -146,7 +146,7 @@ class Board {
             // Display the number of tries
             var tryEl = document.getElementById("tries");
             tryEl.textContent = this.attempt;
-            tryEl.textContent += this.attempt == 1 ? " try!" : " tries!";
+            tryEl.textContent += this.attempt == 1 ? " try!" : " tries.";
 
             // Display the theme
             var themeEl = document.getElementById("theme");
@@ -202,7 +202,6 @@ var globals = {
 
 function init(daily) {
     const wordChoices = [
-        ["LEAH","MARK","RUBY","HUGO", "the Jacobs/Hertzberg family!"],
         ["COOK","STIR","CHOP","DICE", "cooking"],
         ["RICE","BEAN","TACO","CHIP", "Mexican food"],
         ["KICK","BALL","GOAL","CLUB", "soccer/football"],
@@ -222,13 +221,23 @@ function init(daily) {
         ["RENO","ERIE","MESA","HILO", "US cities"]
     ];
 
-    const index = daily ? new Date().getDay() : Math.floor(Math.random() * 91);
-    const i = 0;// index % wordChoices.length;
+    const date = new Date();
+    const dayInYear = (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;    
+    const index = daily ? dayInYear : Math.floor(Math.random() * wordChoices.length);
+    const i = index % wordChoices.length;
+
+    updateTitle(i);
+
     globals.b = new Board(document.getElementById('board'), 
         wordChoices[i].slice(0, 4),
         wordChoices[i].slice(4)[0],
         80);
     globals.b.pickNextLetterAtRandom();
+}
+
+function updateTitle(index) {
+    const titleEl = document.getElementById('titleNum');
+    titleEl.textContent = "#" + index;
 }
 
 function tryAgain() {

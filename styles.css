@@ -86,6 +86,11 @@ body {
     flex-grow: 1;
 }
 
+#header #titleNum {
+    color: #666;
+    font-size: 20px;
+}
+
 .board {
     display: grid;
     justify-content: center;
@@ -190,7 +195,7 @@ body {
 
 .light-mode .modalDialog > div {
     color: black;
-    background-color: #ccc;
+    background-color: #eee;
 }
 
 .dark-mode .modalDialog > div {
@@ -201,7 +206,7 @@ body {
 .modalDialog > div {
     width: 250px;
     position: relative;
-    margin: 10% auto;
+    margin: 30% auto;
     padding: 5px 20px 13px 20px;
     border-radius: 10px;
     border: black;
