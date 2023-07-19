@@ -202,6 +202,7 @@ var globals = {
 
 function init(daily) {
     const wordChoices = [
+        ["LEAH","MARK","RUBY","HUGO", "the Jacobs/Hertzberg family!"],
         ["COOK","STIR","CHOP","DICE", "cooking"],
         ["RICE","BEAN","TACO","CHIP", "Mexican food"],
         ["KICK","BALL","GOAL","CLUB", "soccer/football"],
@@ -222,7 +223,7 @@ function init(daily) {
     ];
 
     const index = daily ? new Date().getDay() : Math.floor(Math.random() * 91);
-    const i = index % wordChoices.length;
+    const i = 0;// index % wordChoices.length;
     globals.b = new Board(document.getElementById('board'), 
         wordChoices[i].slice(0, 4),
         wordChoices[i].slice(4)[0],
