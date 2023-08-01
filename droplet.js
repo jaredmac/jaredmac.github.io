@@ -9,7 +9,7 @@ function createLetterElement(size, clazz) {
     el.classList.add(clazz);
     el.style.height = size + 'px';
     el.style.width = size + 'px';
-    el.style.lineHeight = size + 'px';
+    el.style.lineHeight = (size - 5) + 'px';
     el.style.fontSize = Math.floor(size / 2) + 'px';
     el.textContent = ' ';
     return el;

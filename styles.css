@@ -68,18 +68,19 @@ body {
 
 #header {
     text-align: center;
-    width: 8.5em;
     display: flex;
     margin: 0 auto; /* center myself */
     align-items: center; /* Vertically align items */
     justify-content: center; /* Horizontally center items */
+    font-family: 'Pacifico', cursive;
     font-size: 36px;
     font-weight: bold;
-    padding: .5em 0 .4em 0;
+    padding: .2em 0 .2em 0;
 }
 
 #header img {
-    max-width: 30px;
+    width: 30px;
+    margin: 0px 10px;
 }
 
 #header span {
