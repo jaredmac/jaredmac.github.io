@@ -142,22 +142,40 @@ class Board {
             }
         }
 
-        if (this.interactive && correct) {
-            // Display the number of tries
-            var tryEl = document.getElementById("tries");
-            tryEl.textContent = this.attempt;
-            tryEl.textContent += this.attempt == 1 ? " try!" : " tries.";
-
-            // Display the theme
-            var themeEl = document.getElementById("theme");
-            themeEl.style.fontWeight = 'bold';
-            themeEl.textContent = this.theme;
-
-            // Show the congratulations dialog
-            var dialog = document.getElementById("openModal");
-            dialog.style.opacity = 1;
-            dialog.style.pointerEvents = 'auto';
+        if (this.interactive) {
+            if (correct) {
+                this.showCongratulations();
+            } else {
+                this.showTryAgainButton();
+            }
         }
+    }
+
+    showCongratulations() {
+        // Display the number of tries
+        let tryEl = document.getElementById("tries");
+        tryEl.textContent = this.attempt;
+        tryEl.textContent += this.attempt == 1 ? " try." : " tries.";
+
+        // Display the theme
+        let themeEl = document.getElementById("theme");
+        themeEl.style.fontVariant = 'small-caps';
+        themeEl.textContent = this.theme;
+
+        // Show the congratulations dialog
+        let  congrats = document.getElementById("congratulationsContent");
+        fadeIn(congrats);
+    }
+
+    showTryAgainButton() {
+        let tryAgainContent = document.getElementById("tryAgainContent");
+        fadeIn(tryAgainContent);
+        let tryAgainButton = document.getElementById("tryAgainButton");
+        tryAgainButton.onclick=function() {
+            tryAgainContent.style.visibility = 'hidden';
+            tryAgainContent.style.display = 'none';
+            globals.b.tryAgain();
+        };
     }
 
     isBlank(r, c) {
@@ -266,18 +284,21 @@ function toggleLightDark() {
 
 function startGame(daily) {
     init(daily);
-    fadeOut(document.getElementById("intro"));
+    document.getElementById("intro").style.display = 'none';
 }
 
-function fadeOut(element) {
-    var op = 1;
+function fadeIn(element) {
+    console.log("fadeIn");
+    console.log(element);
+    element.style.opacity = 0;
+    element.style.visibility = 'visible';
+    element.style.display = 'block';
+    var op = 0; 
     var timer = setInterval(function () {
-        if (op <= 0.1) {
+        if (op >= 0.9) {
             clearInterval(timer);
-            element.style.display = 'none';
         }
         element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op -= op * 0.1;
+        op = op + 0.1;
     }, 20);
 }

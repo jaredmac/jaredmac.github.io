@@ -1,55 +1,62 @@
-<html>  
-<head>  
+<html>
+
+<head>
     <title>Droplet by Jared MacDonald</title>
 
     <!-- Fancy font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="styles.css">
-    <script src="droplet.js"></script>  
-    <script src="intro.js"></script>  
+    <script src="droplet.js"></script>
+    <script src="intro.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>  
-<body class="light-mode" onload="initColors(); new Intro()";>
+</head>
 
-    <!-- Fixed header -->
-    <div id="header">
-        <img src="dark_light.svg" onclick="toggleLightDark()">
-        <span>Droplet <span id="titleNum"></span></span>
-        <img src="refresh.svg" onclick="tryAgain()">
-    </div>
+<body class="light-mode" onload="initColors(); new Intro()" ;>
+    <div class="container">
 
-    <!-- Disappearing intro screen -->
-    <div id="intro">
-        <div id="instructions">
-            <p>Drop letters into four thematic words of four letters each.</p>
+        <!-- Fixed header -->
+        <div id="header">
+            <img src="dark_light.svg" onclick="toggleLightDark()">
+            <span>Droplet <span id="titleNum"></span></span>
+            <img src="refresh.svg" onclick="tryAgain()">
+        </div>
+
+        <!-- Disappearing intro screen -->
+        <div id="intro">
+            <div id="instructions">
+                <p>Drop the letters to create four related words.</p>
                 <div id="intro-board"></div>
-            <p>See how many attempts it takes to get it right!</p>
-            <p>
-                <button class="button" onclick="startGame(true)">Daily</button>
-                <button class="button" onclick="startGame(false)">Random</button>
-            </p>
-        </div> 
-    </div>
-
-    <!-- Game screen -->
-    <div id="content">
-        <div id="board">
-        </div>
-        
-        <!-- Game over dialog -->
-        <div id="openModal" class="modalDialog">
-            <div>
-              <p>Congratulations!</p>
-              <p>You solved it in <span id="tries"></span></p>
-              <p>This puzzle's theme was <span id="theme"></span>.</p>
-              <button class="button" onclick="location.reload()">Restart</button>
+                <p>See how many attempts it takes to get it right!</p>
+                <p>
+                    <button class="button" onclick="startGame(true)">Daily</button>
+                    <button class="button" onclick="startGame(false)">Random</button>
+                </p>
             </div>
-          </div>
         </div>
-    </div>
-</body>  
-</html>  
+
+        <!-- Game screen -->
+        <div id="content">
+            <div id="board">
+            </div>
+
+            <!-- Congratulations content -->
+            <div id="congratulationsContent">
+                <p><span id="theme"></span></p>
+                <p>Congratulations!<br>You solved it in <span id="tries"></span></p>
+                <button class="button" onclick="location.reload()">Play Again</button>
+            </div>
+
+            <!-- Try again content -->
+            <div id="tryAgainContent">
+                <p>So close. You can do it!</p>
+                <p><button id="tryAgainButton" class="button">Try Again!</button>
+            </div>
+        </div>
+    </div> <!-- container -->
+</body>
+
+</html>
