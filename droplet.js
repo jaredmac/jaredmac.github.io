@@ -1,9 +1,3 @@
-/*
- * - easy mode and hard mode: easy you get to replace the tiles?
- * - Satisfying success animation
- * - Done screen: reveal the theme, show the count, show the average
- */
-
 function createLetterElement(size, clazz) {
     var el = document.createElement('div');
     el.classList.add(clazz);
@@ -185,6 +179,7 @@ class Board {
         }
         let tryAgainContent = document.getElementById("tryAgainContent");
         fadeIn(tryAgainContent);
+        
         let tryAgainButton = document.getElementById("tryAgainButton");
         tryAgainButton.onclick=function() {
             tryAgainContent.style.visibility = 'hidden';
