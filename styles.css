@@ -1,8 +1,13 @@
 /* general */
+html {
+    height: 100%;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 24px;
     margin: 0;
+    height: 100%;
 }
 
 p {

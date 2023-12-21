@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -11,12 +12,13 @@
     <link rel="stylesheet" href="styles.css">
     <script src="droplet.js"></script>
     <script src="intro.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.2/tsparticles.confetti.bundle.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body class="light-mode" onload="initColors(); new Intro()" ;>
-    <div class="container">
+    <div id="container" class="container">
 
         <!-- Fixed header -->
         <div id="header">
@@ -52,7 +54,7 @@
 
             <!-- Try again content -->
             <div id="tryAgainContent">
-                <p>So close. You can do it!</p>
+                <p id=" "></p>
                 <p><button id="tryAgainButton" class="button">Try Again!</button>
             </div>
         </div>

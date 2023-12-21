@@ -133,25 +133,30 @@ class Board {
     }
 
     endGame() {
-        var correct = true;
+        var correctCount = 0;
         for (let r of this.grid) {
 			for (let c of r) {
-                if (!c.isCorrect()) {
-                    correct = false;
-                } 
+                correctCount += c.isCorrect() ? 1 : 0;
             }
         }
 
         if (this.interactive) {
-            if (correct) {
+            if (correctCount == 16) {
                 this.showCongratulations();
             } else {
-                this.showTryAgainButton();
+                this.showTryAgainButton(correctCount);
             }
         }
     }
 
     showCongratulations() {
+        // Show confetti
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          });
+    
         // Display the number of tries
         let tryEl = document.getElementById("tries");
         tryEl.textContent = this.attempt;
@@ -167,7 +172,17 @@ class Board {
         fadeIn(congrats);
     }
 
-    showTryAgainButton() {
+    showTryAgainButton(correctCount) {
+        let tryAgainMessage = document.getElementById("tryAgainMessage");
+        if (correctCount > 12) {
+            tryAgainMessage.textContent = "Almost!";
+        } else if (correctCount > 7) {
+            tryAgainMessage.textContent = "You're getting there. Don't give up!";
+        } else if (correctCount > 1) {
+            tryAgainMessage.textContent = "Good start. You can do it!";
+        } else {
+            tryAgainMessage.textContent = "Don't despair. You got this!";
+        }
         let tryAgainContent = document.getElementById("tryAgainContent");
         fadeIn(tryAgainContent);
         let tryAgainButton = document.getElementById("tryAgainButton");
@@ -220,23 +235,23 @@ var globals = {
 
 function init(daily) {
     const wordChoices = [
-        ["COOK","STIR","CHOP","DICE", "cooking"],
+        ["COOK","STIR","CHOP","DICE", "cooking actions"],
         ["RICE","BEAN","TACO","CHIP", "Mexican food"],
-        ["KICK","BALL","GOAL","CLUB", "soccer/football"],
+        ["KICK","BALL","GOAL","CLUB", "soccer"],
         ["CARS","ROAD","LANE","MILE", "driving"],
         ["INCH","FOOT","YARD","MILE", "units of measure"],
         ["MIST","RAIN","HAIL","SNOW", "precipitation"],
         ["BABY","TOYS","CRIB","PLAY", "baby things"],
         ["BLUE","GRAY","PINK","CYAN", "colors"],
         ["HAND","FOOT","HEAD","FACE", "body parts"],
-        ["PINE","PLUM","PEAR","PALM", "trees that start with 'P'"],
+        ["PINE","PLUM","PEAR","PALM", "trees that start with 'p'"],
         ["AIDA","CATS","RENT","HAIR", "musicals"],
         ["KIRK","AHAB","NEMO","HOOK", "captains"],
-        ["TREK","WARS","DUST","GATE", "types of star"],
+        ["TREK","WARS","DUST","GATE", "star ____"],
         ["DUNE","JAWS","ARGO","CUJO", "movies"],
         ["BOLT","PINS","NAIL","GLUE", "fasteners"],
-        ["NICE","OSLO","NUUK","KIEV", "European cities"],
-        ["RENO","ERIE","MESA","HILO", "US cities"]
+        ["NICE","OSLO","NUUK","KIEV", "european cities"],
+        ["RENO","ERIE","MESA","HILO", "us cities"]
     ];
 
     const date = new Date();
