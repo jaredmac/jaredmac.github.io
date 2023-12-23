@@ -28,7 +28,7 @@ p {
 
 /* centered, full-height, max-width content for similar phone/desktop appearance */
 .container {
-    max-width: 500px;
+    max-width: 450px;
     margin: 0 auto;
     height: 100%;
 }
