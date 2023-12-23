@@ -28,7 +28,7 @@ p {
 
 /* centered, full-height, max-width content for similar phone/desktop appearance */
 .container {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
     height: 100%;
 }
@@ -180,16 +180,25 @@ p {
     }
 }
 
-/* various messages */
-#tryAgainContent, #congratulationsContent, #theme {
-    display: none;
-    visibility: hidden;
-}
-
+/* revealed theme at top */
 #theme {
     position: absolute;
     left: 0; 
     right: 0; 
     margin-left: auto; 
     margin-right: auto; 
+}
+
+/* various messages */
+#tryAgainContent, #congratulationsContent, #theme, #timer {
+    display: none;
+    visibility: hidden;
+}
+
+#congratulationsContent span {
+    font-weight: bold;
+}
+
+#theme {
+    font-variant: small-caps; 
 }

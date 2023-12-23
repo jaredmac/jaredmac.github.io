@@ -44,9 +44,16 @@
             <p id="theme"></p>
             <div id="board"></div>
 
+            <div>
+                <p id="timer">00:00</p>
+            </div>
+
             <!-- Congratulations content -->
             <div id="congratulationsContent">
-                <p>Congratulations!<br>You solved it in <span id="tries"></span></p>
+                <p>Congratulations!<br>You solved it in 
+                    <span id="tries"></span>, with a time of <span id="timerResult"></span>. 
+                    Today's average time was 00:45.
+                </p>
                 <button class="button" onclick="location.reload()">Play Again</button>
             </div>
 

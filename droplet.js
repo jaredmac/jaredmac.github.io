@@ -51,11 +51,11 @@ class Tile {
 }
 
 class Board {
-    constructor(el, answers, theme, gridSize) {
+    constructor(el, answers, theme, gridSize, interactive) {
         this.answers = answers;
         this.theme = theme;
         this.attempt = 1;
-        this.interactive = true;
+        this.interactive = interactive;
         this.resetAvailableLetters();
 
         // Create the current letter above the board
@@ -76,10 +76,13 @@ class Board {
                 this.createBlankTile(boardElem, r, c, gridSize);
             }
 		}
-    }
 
-    setNonInteractive() {
-        this.interactive = false;
+        this.timerStarted = false;
+        if (this.interactive) {
+            this.timerEl = document.getElementById("timer");
+            this.timerEl.style.visibility = 'visible';
+            this.timerEl.style.display = 'block';
+        }
     }
 
     resetAvailableLetters() {
@@ -144,25 +147,37 @@ class Board {
     }
 
     showCongratulations() {
-        // Show confetti
+        // Stop and hide the timer
+        clearInterval(this.timerId);
+        this.timerEl.style.visibility = 'hidden';
+        this.timerEl.style.display = 'none';
+
+        // Show confetti and wait a bit
         confetti({
             count: 100
-          });
-    
-        // Display the number of tries
-        let tryEl = document.getElementById("tries");
-        tryEl.textContent = this.attempt;
-        tryEl.textContent += this.attempt == 1 ? " try." : " tries.";
+        });
 
         // Display the theme
         let themeEl = document.getElementById("theme");
-        themeEl.style.fontVariant = 'small-caps';
         fadeIn(themeEl);
         themeEl.textContent = this.theme;
+        
+        // Wait a bit before showing the rest
+        var that = this;        
+        setTimeout(function () {
+            // Display the number of tries
+            let tryEl = document.getElementById("tries");
+            tryEl.textContent = that.attempt;
+            tryEl.textContent += that.attempt == 1 ? " attempt" : " attempts";
 
-        // Show the congratulations dialog
-        let congrats = document.getElementById("congratulationsContent");
-        fadeIn(congrats);
+            // Show the time
+            let timerResultEl = document.getElementById("timerResult");
+            timerResultEl.textContent = document.getElementById("timer").textContent;
+
+            // Show the congratulations
+            let congrats = document.getElementById("congratulationsContent");
+            fadeIn(congrats);
+        }, 5000);
     }
 
     showTryAgainButton(correctCount) {
@@ -192,6 +207,7 @@ class Board {
     }
 
     dropAt(c) {
+        this.updateTimer();
         let r = this.getAvailableRowInColumn(c);
         if (r != -1) {
             let correctLetter = this.answers[r].charAt(c);
@@ -207,6 +223,30 @@ class Board {
             } else { 
                 this.pickNextLetterAtRandom();
             }
+        }
+    }
+
+    updateTimer() {
+        if (this.interactive && !this.timerStarted) {
+            this.timerStarted = true;
+            var seconds = 0;
+            var minutes = 0;
+            var that = this;
+            this.timerId = setInterval(function() {
+                seconds++;
+                if (seconds == 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+                that.timerEl.textContent = pad(minutes) + ":" + pad(seconds);
+                function pad(num) {
+                    if (num < 10) {
+                        return "0" + num;
+                    } else {
+                        return "" + num;
+                    }
+                }
+            }, 1000);
         }
     }
     
@@ -257,7 +297,7 @@ function init(daily) {
     globals.b = new Board(document.getElementById('board'), 
         wordChoices[i].slice(0, 4),
         wordChoices[i].slice(4)[0],
-        80);
+        80, true);
     globals.b.pickNextLetterAtRandom();
 }
 
@@ -296,8 +336,6 @@ function startGame(daily) {
 }
 
 function fadeIn(element) {
-    console.log("fadeIn");
-    console.log(element);
     element.style.opacity = 0;
     element.style.visibility = 'visible';
     element.style.display = 'block';
