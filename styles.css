@@ -11,7 +11,7 @@ body {
 }
 
 p {
-    padding-top: 0.25em;
+    padding-top: 0.2em;
     padding-left: 1em;
     padding-right: 1em;
 }
@@ -47,9 +47,8 @@ p {
     font-size: 18px;
     border-radius: 1.5em;
     padding: 10px 16px;
-    margin: 0px 10px 8px;
+    margin: 0 10px 8px;
     min-width: 5em;
-    cursor: hand;
 }
 
 .light-mode .button {
@@ -83,7 +82,7 @@ p {
 
 #header img {
     width: 30px;
-    margin: 0px 10px;
+    margin: 0 10px;
 }
 
 #header span {
@@ -182,7 +181,15 @@ p {
 }
 
 /* various messages */
-#tryAgainContent, #congratulationsContent {
+#tryAgainContent, #congratulationsContent, #theme {
     display: none;
     visibility: hidden;
+}
+
+#theme {
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
 }

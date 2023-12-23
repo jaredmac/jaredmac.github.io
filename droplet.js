@@ -159,15 +159,16 @@ class Board {
         // Display the theme
         let themeEl = document.getElementById("theme");
         themeEl.style.fontVariant = 'small-caps';
+        fadeIn(themeEl);
         themeEl.textContent = this.theme;
 
         // Show the congratulations dialog
-        let  congrats = document.getElementById("congratulationsContent");
+        let congrats = document.getElementById("congratulationsContent");
         fadeIn(congrats);
     }
 
     showTryAgainButton(correctCount) {
-        let tryAgainMessage = document.getElementById("tryAgainMessage");
+            let tryAgainMessage = document.getElementById("tryAgainMessage");
         if (correctCount > 12) {
             tryAgainMessage.textContent = "Almost!";
         } else if (correctCount > 7) {
@@ -179,7 +180,7 @@ class Board {
         }
         let tryAgainContent = document.getElementById("tryAgainContent");
         fadeIn(tryAgainContent);
-        
+
         let tryAgainButton = document.getElementById("tryAgainButton");
         tryAgainButton.onclick=function() {
             tryAgainContent.style.visibility = 'hidden';
@@ -231,7 +232,7 @@ var globals = {
 function init(daily) {
     const wordChoices = [
         ["COOK","STIR","CHOP","DICE", "cooking actions"],
-        ["RICE","BEAN","TACO","CHIP", "Mexican food"],
+        ["RICE","BEAN","TACO","CHIP", "mexican food"],
         ["KICK","BALL","GOAL","CLUB", "soccer"],
         ["CARS","ROAD","LANE","MILE", "driving"],
         ["INCH","FOOT","YARD","MILE", "units of measure"],
@@ -244,7 +245,6 @@ function init(daily) {
         ["KIRK","AHAB","NEMO","HOOK", "captains"],
         ["TREK","WARS","DUST","GATE", "star ____"],
         ["DUNE","JAWS","ARGO","CUJO", "movies"],
-        ["BOLT","PINS","NAIL","GLUE", "fasteners"],
         ["NICE","OSLO","NUUK","KIEV", "european cities"],
         ["RENO","ERIE","MESA","HILO", "us cities"]
     ];
