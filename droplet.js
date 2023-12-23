@@ -146,9 +146,7 @@ class Board {
     showCongratulations() {
         // Show confetti
         confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
+            count: 100
           });
     
         // Display the number of tries
