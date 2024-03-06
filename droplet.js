@@ -10,9 +10,10 @@ function createLetterElement(size, clazz) {
 }
 
 class Tile {
-    constructor(boardElem, gridSize, listener) {
+    constructor(boardElem, correctLetter, gridSize, listener) {
         this.letter = ' ';
         this.tile = createLetterElement(gridSize, 'tile');
+        this.correctLetter = correctLetter;
         this.correct = false;
         this.listener = listener;
         boardElem.appendChild(this.tile);
@@ -22,13 +23,19 @@ class Tile {
         return this.correct;
     }
 
-    dropLetter(letter, correctLetter) {
+    dropLetter(letter) {
         this.setLetter(letter);
         this.tile.classList.add('filled');
-        if (letter == correctLetter) {
+        if (letter == this.correctLetter) {
             this.tile.classList.add('correct');
             this.correct = true;
         } 
+    }
+
+    reveal() {
+        this.setLetter(this.correctLetter);
+        this.tile.classList.add('correct');
+        this.correct = true;
     }
 
     setLetter(l) {
@@ -50,6 +57,42 @@ class Tile {
     }
 }
 
+class Timer {
+    constructor() {
+        this.started = false;
+        this.seconds = 0;
+    }
+
+    hasStarted() {
+        return this.started;
+    }
+
+    add(seconds) {
+        this.seconds += seconds;
+    }
+
+    start() {
+        this.started = true;
+        var that = this;
+        this.timerId = setInterval(function() {
+            that.seconds++;
+            var timerEl = document.getElementById("timer");
+            timerEl.textContent = pad(Math.floor(that.seconds / 60)) + ":" + pad(that.seconds % 60);
+            function pad(num) {
+                if (num < 10) {
+                    return "0" + num;
+                } else {
+                    return "" + num;
+                }
+            }
+        }, 1000);
+    }
+
+    stop() {
+        clearInterval(this.timerId);
+    }
+}
+
 class Board {
     constructor(el, answers, theme, gridSize, interactive) {
         this.answers = answers;
@@ -58,9 +101,13 @@ class Board {
         this.interactive = interactive;
         this.resetAvailableLetters();
 
-        // Create the current letter above the board
+        // Create the current letter above the board. Don't show it 
+        // if not interactive to save space
         this.letterElem = createLetterElement(gridSize, 'currentLetter');
-        el.appendChild(this.letterElem);
+        el.textContent = '';
+        if (interactive) {
+            el.appendChild(this.letterElem);
+        }
 
         // Create the board itself
         let boardElem = document.createElement('div');
@@ -73,15 +120,14 @@ class Board {
         for (let r = 0; r < 4; r++) {
 			this.grid[r] = new Array(4);
 			for (let c = 0; c < this.grid[r].length; c++) {
-                this.createBlankTile(boardElem, r, c, gridSize);
+                this.createBlankTile(boardElem, r, c, answers[r].charAt(c), gridSize);
             }
 		}
 
-        this.timerStarted = false;
         if (this.interactive) {
-            this.timerEl = document.getElementById("timer");
-            this.timerEl.style.visibility = 'visible';
-            this.timerEl.style.display = 'block';
+            this.timer = new Timer();
+            show("belowBoard");
+            show("timer");
         }
     }
 
@@ -89,20 +135,38 @@ class Board {
         this.availableLetters = this.answers[3];
     }
 
-    tryAgain() {
+    tryAgain(penalty) {
+        // Make sure we re-show the timer 
+        show("belowBoard");
+
+        // Add the penalty, if any
+        this.timer.add(penalty);
         this.attempt++;
-        for (let r of this.grid) {
-			for (let c of r) {
-                c.clearLetter();
-            }
-		}
+
+        this.clearBoard();
         this.resetAvailableLetters();
         this.pickNextLetterAtRandom();
     }
 
-    createBlankTile(boardElem, r, c, gridSize) {
+    revealAll() {
+        for (let r of this.grid) {
+            for (let c of r) {
+                c.reveal();
+            }
+        }
+    }
+
+    clearBoard() {
+        for (let r of this.grid) {
+            for (let c of r) {
+                c.clearLetter();
+            }
+        }
+    }
+
+    createBlankTile(boardElem, r, c, correctLetter, gridSize) {
         const b = this;
-        this.grid[r][c] = new Tile(boardElem, gridSize, function handleClick(e) {
+        this.grid[r][c] = new Tile(boardElem, correctLetter, gridSize, function handleClick(e) {
             b.dropAt(c);
         });
     }
@@ -148,9 +212,8 @@ class Board {
 
     showCongratulations() {
         // Stop and hide the timer
-        clearInterval(this.timerId);
-        this.timerEl.style.visibility = 'hidden';
-        this.timerEl.style.display = 'none';
+        this.timer.stop();
+        hide("belowBoard");
 
         // Show confetti and wait a bit
         confetti({
@@ -175,13 +238,15 @@ class Board {
             timerResultEl.textContent = document.getElementById("timer").textContent;
 
             // Show the congratulations
-            let congrats = document.getElementById("congratulationsContent");
-            fadeIn(congrats);
+            fadeIn("congratulationsContent");
         }, 5000);
     }
 
     showTryAgainButton(correctCount) {
-            let tryAgainMessage = document.getElementById("tryAgainMessage");
+        // Temporarily hide the timer 
+        hide("belowBoard");
+        
+        let tryAgainMessage = document.getElementById("tryAgainMessage");
         if (correctCount > 12) {
             tryAgainMessage.textContent = "Almost!";
         } else if (correctCount > 7) {
@@ -191,14 +256,13 @@ class Board {
         } else {
             tryAgainMessage.textContent = "Don't despair. You got this!";
         }
-        let tryAgainContent = document.getElementById("tryAgainContent");
-        fadeIn(tryAgainContent);
+        fadeIn("tryAgainContent");
 
         let tryAgainButton = document.getElementById("tryAgainButton");
+        var that = this;
         tryAgainButton.onclick=function() {
-            tryAgainContent.style.visibility = 'hidden';
-            tryAgainContent.style.display = 'none';
-            globals.b.tryAgain();
+            hide("tryAgainContent");
+            that.tryAgain(0);
         };
     }
 
@@ -207,12 +271,11 @@ class Board {
     }
 
     dropAt(c) {
-        this.updateTimer();
+        // Start the timer at the first letter drop (a la NYTimes crossword)
+        this.startTimerIfNotAlready();
         let r = this.getAvailableRowInColumn(c);
         if (r != -1) {
-            let correctLetter = this.answers[r].charAt(c);
-
-            this.grid[r][c].dropLetter(this.letter, correctLetter);
+            this.grid[r][c].dropLetter(this.letter);
             this.availableLetters = this.availableLetters.replace(this.letter, '');
             if (r - 1 >= 0) {
                 this.availableLetters = this.availableLetters + this.answers[r - 1].charAt(c);
@@ -226,27 +289,9 @@ class Board {
         }
     }
 
-    updateTimer() {
-        if (this.interactive && !this.timerStarted) {
-            this.timerStarted = true;
-            var seconds = 0;
-            var minutes = 0;
-            var that = this;
-            this.timerId = setInterval(function() {
-                seconds++;
-                if (seconds == 60) {
-                    seconds = 0;
-                    minutes++;
-                }
-                that.timerEl.textContent = pad(minutes) + ":" + pad(seconds);
-                function pad(num) {
-                    if (num < 10) {
-                        return "0" + num;
-                    } else {
-                        return "" + num;
-                    }
-                }
-            }, 1000);
+    startTimerIfNotAlready() {
+        if (this.interactive && !this.timer.hasStarted()) {
+            this.timer.start();
         }
     }
     
@@ -275,7 +320,6 @@ function init(daily) {
         ["CARS","ROAD","LANE","MILE", "driving"],
         ["INCH","FOOT","YARD","MILE", "units of measure"],
         ["MIST","RAIN","HAIL","SNOW", "precipitation"],
-        ["BABY","TOYS","CRIB","PLAY", "baby things"],
         ["BLUE","GRAY","PINK","CYAN", "colors"],
         ["HAND","FOOT","HEAD","FACE", "body parts"],
         ["PINE","PLUM","PEAR","PALM", "trees that start with 'p'"],
@@ -284,9 +328,13 @@ function init(daily) {
         ["TREK","WARS","DUST","GATE", "star ____"],
         ["DUNE","JAWS","ARGO","CUJO", "movies"],
         ["NICE","OSLO","NUUK","KIEV", "european cities"],
-        ["RENO","ERIE","MESA","HILO", "us cities"]
+        ["RENO","ERIE","MESA","HILO", "us cities"],
+        ["DASH","FLEE","DART","RACE", "move quickly"],
+        ["LIFT","FLEX","PUSH","PULL", "gym actions"],
+        ["PICK","PASS","FOUL","DUNK", "basketball"]
     ];
 
+    // Pick a theme based on the day or at random
     const date = new Date();
     const dayInYear = (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000;    
     const index = daily ? dayInYear : Math.floor(Math.random() * wordChoices.length);
@@ -306,8 +354,8 @@ function updateTitle(index) {
     titleEl.textContent = "#" + index;
 }
 
-function tryAgain() {
-    globals.b.tryAgain();
+function tryAgain(penalty) {
+    globals.b.tryAgain(penalty);
 }
 
 function initColors() {
@@ -318,33 +366,69 @@ function initColors() {
 }
 
 function toggleLightDark() {
-    let body = document.body;
-    if (body.classList.contains("light-mode")) {
-        body.classList.remove("light-mode");
-        body.classList.add("dark-mode");
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains("dark-mode")) {
         localStorage.setItem("colorMode", "dark");
     } else {
-        body.classList.remove("dark-mode");
-        body.classList.add("light-mode");
         localStorage.setItem("colorMode", "light");
+    }
+}
+
+function toggleHelp() {
+    let helpEl = document.getElementById("help");
+    if (window.getComputedStyle(helpEl).display == 'none') {
+        let words = ["BLUE","GRAY","PINK","CYAN"];
+        showBoard('help-board', words, "colors");
+        showPartialBoard('help-board-partial', words, "colors");
+        fadeIn(helpEl);
+    } else { 
+        fadeOut(helpEl);
     }
 }
 
 function startGame(daily) {
     init(daily);
-    document.getElementById("intro").style.display = 'none';
+    hide("intro");
 }
 
-function fadeIn(element) {
+function fadeIn(el) {
+    var element = el instanceof Element ? el : document.getElementById(el);
     element.style.opacity = 0;
-    element.style.visibility = 'visible';
-    element.style.display = 'block';
     var op = 0; 
     var timer = setInterval(function () {
         if (op >= 0.9) {
+            element.style.opacity = 1;
+            element.style.display = 'block';
             clearInterval(timer);
+        } else {
+            element.style.opacity = op;
+            op = op + 0.1;
         }
-        element.style.opacity = op;
-        op = op + 0.1;
-    }, 20);
+    }, 10);
+}
+
+function fadeOut(el) {
+    var element = el instanceof Element ? el : document.getElementById(el);
+    element.style.opacity = 1;
+    var op = 1; 
+    var timer = setInterval(function () {
+        if (op <= 0.1) {
+            element.style.opacity = 0;
+            element.style.display = 'none';
+            clearInterval(timer);
+        } else {
+            element.style.opacity = op;
+            op = op - 0.1;
+        }
+    }, 10);
+}
+
+function hide(id) {
+    let el = document.getElementById(id);
+    el.style.display = 'none';
+}
+
+function show(id) {
+    let el = document.getElementById(id);
+    el.style.display = 'block';
 }

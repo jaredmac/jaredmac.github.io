@@ -16,21 +16,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body class="light-mode" onload="initColors(); new Intro()" ;>
+<body onload="new Intro('intro-board',500); initColors()" ;>
     <div id="container" class="container">
 
         <!-- Fixed header -->
         <div id="header">
-            <img src="dark_light.svg" onclick="toggleLightDark()">
             <span>Droplet <span id="titleNum"></span></span>
-            <img src="refresh.svg" onclick="tryAgain()">
+            <img src="dark_light.svg" onclick="toggleLightDark()">
+            <img src="help.svg" onclick="toggleHelp()">
         </div>
 
         <!-- Disappearing intro screen -->
         <div id="intro">
             <div id="instructions">
-                <p>Tap the squares to drop the letters to create four related words. 
-                    Clear the board at any time by pressing the refresh button.
+                <p>Tap the squares to drop the letters to reveal four related words. 
+                    Clear the board at any time by pressing the "Clear" button.
                 </p>
                 <div id="intro-board"></div>
                 <p>See how quickly you can get it right!</p>
@@ -41,13 +41,41 @@
             </div>
         </div>
 
+        <!-- Help popup -->
+        <div id="help">
+            <span style="font-size: 20px;"><b>How to Play</b></span>
+
+            <span class="close-btn" onclick="fadeOut('help')">&times;</span>
+
+            <p>Reveal four words of a hidden theme by dropping
+            the letters into their correct spots.
+            For example, the following could be a completed board 
+            for "Colors":</p>
+
+            <div id="help-board"></div>
+            
+            <p>Drop letters to the <b>bottom of the board</b> into one of the
+             highlighted spots. A correct letter will turn green and an incorrect
+            letter will turn gray:</p>
+
+            <div id="help-board-partial"></div>
+            
+            <p>It will take multiple attempts to solve.
+            You can clear the board at any time by
+            pressing the "Clear" button, but doing so adds 
+            a 20 second penalty.</p>
+
+            <p>See how quickly you can get it right!</p>
+        </div>
+
         <!-- Game screen -->
         <div id="content">
             <p id="theme"></p>
             <div id="board"></div>
 
-            <div>
+            <div id="belowBoard">
                 <p id="timer">00:00</p>
+                <button id="clearButton" onclick="tryAgain(20)" class="button">Clear</button>
             </div>
 
             <!-- Congratulations content -->
