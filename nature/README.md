@@ -4,8 +4,6 @@
 python -m http.server 8000
 ```
 
-Next: Check this in somewhere!
-
 0. X Switch to Phaser JS: https://phaser.io/tutorials/getting-started-phaser3/part5
 1. X Tiles filling the screen 
 2. X Different color tiles for different types of ground

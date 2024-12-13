@@ -1,8 +1,18 @@
 body {
-  display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
   margin: 0;
   background-color: black;
+}
+#game-container {
+  margin: 20px;
+  text-align: center;
+}
+#game-message {
+  color: white;
+  font-family:'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
 }

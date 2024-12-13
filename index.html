@@ -13,18 +13,28 @@
             margin: 0px;
         }
         img {
-            height: 600px;
+            width: 100%;
         }
-        div {
+        .image-container {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
+            padding: 10px;
+        }
+        @media (min-width: 768px) {
+           .image-container {
+                flex-wrap: nowrap;
+            }
+            .responsive-image {
+                width: 50%; /* Adjusts the images to be side-by-side on larger screens */
+            }
         }
     </style>
 </head>
 <body>
-    <div>
+    <div class="image-container">
         <a href="./droplet/index.html"><img src="images/droplet.png"></a>
         <a href="./nature/index.html"><img src="images/nature.png"></a>
     </div>
 </body>
-</html> 
+</html>

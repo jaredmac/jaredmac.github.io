@@ -82,7 +82,7 @@ class MyScene extends Phaser.Scene {
     preload() {
         this.load.image("grass", "./images/grass.png");
         this.load.image("grass2", "./images/grass2.png");
-        this.load.image('squirrel', './images/squirrel2.png');
+        this.load.image('squirrel', './images/squirrel.png');
     }
 
     create() {
@@ -173,6 +173,7 @@ const config = {
     width: gameWidth,
     height: gameHeight,
     pixelArt: true,
+    parent: 'game-container',
     scale: {
         zoom: 4.5
     },
