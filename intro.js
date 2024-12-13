@@ -1,8 +1,5 @@
 /*
- * PLAY
- * THIS
- * WORD
- * GAME
+ * Intro screen that plays a dummy version of the game.
  */ 
 class Intro {
     constructor(id, delay) {
