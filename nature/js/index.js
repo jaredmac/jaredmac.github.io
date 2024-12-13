@@ -1,7 +1,9 @@
 
 const rectSize = 8;
-const mapHeight = 23;
-const mapWidth = 40;
+
+/* variable-browser window (e.g. mobile)-friendly map dimensions */
+const mapHeight = window.innerHeight / 44;
+const mapWidth = window.innerWidth / 40;
 
 const gameHeight = rectSize * mapHeight;
 const gameWidth = rectSize * mapWidth;
@@ -121,7 +123,6 @@ class MyScene extends Phaser.Scene {
     update() {
         this.movePlayer();
         if (this.map.isWaterAt(this.player.body.x, this.player.body.y)) {
-            console.log("in water");
         }
     }
 
