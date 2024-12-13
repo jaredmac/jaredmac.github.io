@@ -113,8 +113,8 @@ class MyScene extends Phaser.Scene {
             }
         }
 
-        // Create player
-        this.player = this.physics.add.sprite(100, 100, 'squirrel');
+        // Create player at the center of the map for now
+        this.player = this.physics.add.sprite(mapWidth / 2 * rectSize, mapHeight / 2 * rectSize, 'squirrel');
 
         // Listen to cursor
         this.cursors = this.input.keyboard.createCursorKeys();
