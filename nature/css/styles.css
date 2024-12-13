@@ -13,6 +13,12 @@ body {
   color: white;
   font-family:'Courier New', Courier, monospace;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 16px;
   text-align: center;
+}
+/* Larger font size for medium to large screens (tablets and PCs) */
+@media (min-width: 768px) {
+  #game-message {
+      font-size: 30px;
+  }
 }
