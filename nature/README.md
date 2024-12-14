@@ -10,7 +10,7 @@ python -m http.server 8000
 3. X Render grass tiles like so: https://opengameart.org/content/grass-tileset-16x16
     3.1. Consider rendering the sprite as a separate program and storing
 4. X Character (just a white sub-tile-sized square)
-5. Make it mobile friendly
+5. X Make it mobile friendly
 6. Descriptive text on bottom of screen
 7. Character can move onto different screens
 8. Allow squirrel to "drink" from water

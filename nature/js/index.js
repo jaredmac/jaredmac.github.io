@@ -71,7 +71,7 @@ class MyMap {
     isWaterAt(px, py) {
         let x = Math.floor(px / rectSize);
         let y = Math.floor(py / rectSize);
-        return this.map[y][x] == 'W';
+        return this.inBounds(x, y) && this.map[y][x] == 'W';
     }
 }
 
@@ -79,6 +79,8 @@ class MyScene extends Phaser.Scene {
     constructor() {
         super();
         this.map = new MyMap();
+        this.startX = -1;
+        this.startY = -1;
     }
 
     preload() {
@@ -127,6 +129,7 @@ class MyScene extends Phaser.Scene {
     }
 
     movePlayer() {
+        // Keyboard input
         let dx = 40;
         if (this.cursors.left.isDown) {
             this.player.body.velocity.x = -dx;
@@ -142,6 +145,22 @@ class MyScene extends Phaser.Scene {
             this.player.body.velocity.y = dx;
         } else {
             this.player.body.velocity.y = 0;
+        }
+
+        // Mouse/finger input
+        if (this.input.pointer1.isDown) {
+            if (this.startX == -1) {
+                this.startX = this.input.pointer1.worldX;
+                this.startY = this.input.pointer1.worldY;
+            } else {
+                let dx = (this.input.pointer1.worldX - this.startX) * 2;
+                let dy = (this.input.pointer1.worldY - this.startY) * 2;
+                this.player.body.velocity.x = dx;
+                this.player.body.velocity.y = dy;
+            }
+        } else {
+            this.startX = -1;
+            this.startY = -1;
         }
     }
 
