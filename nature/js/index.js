@@ -118,6 +118,17 @@ class MyScene extends Phaser.Scene {
 
     collectAcorn(player, acorn) {
         acorn.disableBody(true, true);
+        const index = this.acorns.indexOf(acorn);
+        this.acorns.splice(index, 1);
+        if (this.acorns.length > 0) {
+            this.updateMessage("Yum!");
+        } else {
+            this.updateMessage("I'm full. Time to take a nap.");
+        }
+    }
+
+    updateMessage(message) {
+        document.getElementById('game-message').innerHTML = message;
     }
 
     drawMap() {
