@@ -104,6 +104,9 @@ class MyScene extends Phaser.Scene {
 
         // Listen to cursor
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        // Starting message
+        this.updateMessage("Help me find some nuts to eat!");
     }
 
     placeAcorns() {
@@ -111,27 +114,33 @@ class MyScene extends Phaser.Scene {
         for (var i = 0; i < 4; i++) {
             let x = Math.random() * this.map.width;
             let y = Math.random() * this.map.height;
-            this.acorns.push(this.physics.add.sprite(x * rectSize, y * rectSize, 'acorn'));
+            let acorn = this.physics.add.sprite(x * rectSize, y * rectSize, 'acorn');
+            this.acorns.push(acorn);
+            this.mapObjs.push(acorn);
         }
         this.physics.add.overlap(this.player, this.acorns, this.collectAcorn, null, this);
     }
 
     collectAcorn(player, acorn) {
         acorn.disableBody(true, true);
-        const index = this.acorns.indexOf(acorn);
-        this.acorns.splice(index, 1);
+        this.acorns.splice(this.acorns.indexOf(acorn), 1);
         if (this.acorns.length > 0) {
             this.updateMessage("Yum!");
+            this.clearMap();
         } else {
-            this.updateMessage("I'm full. Time to take a nap.");
+            this.updateMessage("Yummy, but I'm full now. Time to take a nap.");
         }
     }
 
     updateMessage(message) {
         document.getElementById('game-message').innerHTML = message;
+        setTimeout(function() {
+            document.getElementById('game-message').innerHTML = "";
+        }, 5000);
     }
 
     drawMap() {
+        this.mapObjs = [];
         for (var y = 0; y < this.map.height; y++) {
             for (var x = 0; x < this.map.width; x++) { 
                 var types = this.map.getLeftAndBelowIfMatching(x, y);
@@ -143,7 +152,10 @@ class MyScene extends Phaser.Scene {
                         this.drawRightAndBelowTriangles(x, y, types[0], types[1]);
                     } else {
                         if (this.map.getCellAt(x, y) == 'M' && Math.random() > .95) {
-                            this.add.image(x*rectSize, y*rectSize, Math.random() > .5 ? "grass" : "grass2").setOrigin(0, 0);
+                            let image = this.add.image(x*rectSize, 
+                                y*rectSize, 
+                                Math.random() > .5 ? "grass" : "grass2").setOrigin(0, 0);
+                            this.mapObjs.push(image);
                         } else {
                             let color = this.map.getColorAt(x, y);
                             let rect = new Phaser.GameObjects.Rectangle(this, 
@@ -151,6 +163,7 @@ class MyScene extends Phaser.Scene {
                                 y*rectSize, 
                                 rectSize, 
                                 rectSize, color).setOrigin(0, 0);
+                            this.mapObjs.push(rect);
                             this.add.existing(rect);
                         }
                     }
@@ -159,6 +172,32 @@ class MyScene extends Phaser.Scene {
         }
     }
 
+    drawLeftAndBelowTriangles(x, y, c1, c2) {
+        let g = new Phaser.GameObjects.Graphics(this);
+        this.drawTriangle(g, c1, x, y, [0,0], [1,0], [1,1]);
+        this.drawTriangle(g, c2, x, y, [0,0], [0,1], [1,1]);
+        this.add.existing(g);
+        this.mapObjs.push(g);
+    }
+
+    drawRightAndBelowTriangles(x, y, c1, c2) {
+        let g = new Phaser.GameObjects.Graphics(this);
+        this.drawTriangle(g, c1, x, y, [0,0], [1,0], [0,1]);
+        this.drawTriangle(g, c2, x, y, [1,0], [1,1], [0,1]);
+        this.add.existing(g);
+        this.mapObjs.push(g);
+    }
+
+    drawTriangle(g, c1, x, y, v1, v2, v3) {
+        g.fillStyle(colorMap.getColorFor(c1));
+        g.beginPath();
+        g.moveTo(x*rectSize+rectSize*v1[0], y*rectSize+rectSize*v1[1]);
+        g.lineTo(x*rectSize+rectSize*v2[0], y*rectSize+rectSize*v2[1]);
+        g.lineTo(x*rectSize+rectSize*v3[0], y*rectSize+rectSize*v3[1]);
+        g.fillPath();
+    }
+
+
     update() {
         this.movePlayer();
         if (this.playerIsOutOfBounds()) {
@@ -166,6 +205,12 @@ class MyScene extends Phaser.Scene {
             this.player.x = 30;
             this.player.y = 30;
         }
+    }
+
+    clearMap() {
+        this.mapObjs.forEach(obj => {
+            obj.destroy();
+        });
     }
 
     regenerateMap() {
@@ -211,29 +256,6 @@ class MyScene extends Phaser.Scene {
             this.startX = -1;
             this.startY = -1;
         }
-    }
-
-    drawLeftAndBelowTriangles(x, y, c1, c2) {
-        let g = new Phaser.GameObjects.Graphics(this);
-        this.drawTriangle(g, c1, x, y, [0,0], [1,0], [1,1]);
-        this.drawTriangle(g, c2, x, y, [0,0], [0,1], [1,1]);
-        this.add.existing(g);
-    }
-
-    drawRightAndBelowTriangles(x, y, c1, c2) {
-        let g = new Phaser.GameObjects.Graphics(this);
-        this.drawTriangle(g, c1, x, y, [0,0], [1,0], [0,1]);
-        this.drawTriangle(g, c2, x, y, [1,0], [1,1], [0,1]);
-        this.add.existing(g);
-    }
-
-    drawTriangle(g, c1, x, y, v1, v2, v3) {
-        g.fillStyle(colorMap.getColorFor(c1));
-        g.beginPath();
-        g.moveTo(x*rectSize+rectSize*v1[0], y*rectSize+rectSize*v1[1]);
-        g.lineTo(x*rectSize+rectSize*v2[0], y*rectSize+rectSize*v2[1]);
-        g.lineTo(x*rectSize+rectSize*v3[0], y*rectSize+rectSize*v3[1]);
-        g.fillPath();
     }
 }
 
