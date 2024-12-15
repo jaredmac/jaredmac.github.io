@@ -1,87 +1,12 @@
-
 const rectSize = 8;
-
-/* variable-browser window (e.g. mobile)-friendly map dimensions */
-const mapHeight = window.innerHeight / 44;
-const mapWidth = window.innerWidth / 40;
-
 const gameHeight = rectSize * mapHeight;
 const gameWidth = rectSize * mapWidth;
-
-const colorMap = new ColorMap();
-
-class MyMap {
-    constructor() {
-        this.width = mapWidth;
-        this.height = mapHeight;
-        this.resetMap();
-    }
-
-    resetMap() {
-        this.map = [];
-        const perlin = new PerlinNoise();
-        for (let y = 0; y < this.height; y++) {
-            const row = [];
-            for (let x = 0; x < this.width; x++) {
-                const value = perlin.noise(x/20, y/20);
-                if (value < -0.3) {
-                    row.push('W');
-                } else if (value < -0.1) {
-                    row.push('S');
-                } else if (value < 0.2) {
-                    row.push('M');
-                } else {
-                    row.push('F');
-                }
-            }
-            this.map.push(row);
-        }
-    }
-
-    getCellAt(x, y) {
-        return this.map[y][x];
-    }
-
-    getLeftAndBelowIfMatching(x, y) {
-        return this.getIfMatching(x, y, -1, 1);
-    }
-
-    getRightAndBelowIfMatching(x, y) {
-        return this.getIfMatching(x, y, 1, 1);
-    }
-
-    getIfMatching(x, y, dx, dy) {
-        let result = [];
-        if (this.inMapBounds(x+dx, y+dy) 
-            && this.map[y][x] != this.map[y][x+dx]
-            && this.map[y][x+dx] == this.map[y+dy][x] 
-            && this.map[y][x+dx] == this.map[y+dy][x+dx]) {
-                result[0] = this.map[y][x];
-                result[1] = this.map[y][x+dx];
-        }
-        return result;
-    }
-
-    inMapBounds(x, y) {
-        return x >= 0 && x < this.width && y >= 0 && y < this.height;
-    }
-
-    inScreenBounds(px, py) {
-        let x = Math.floor(px / rectSize);
-        let y = Math.floor(py / rectSize);
-        return this.inMapBounds(x, y);
-    }
-
-    getColorAt(x, y) {
-        return colorMap.getColorFor([this.map[y][x]]);
-    }
-    
-}
 
 class MyScene extends Phaser.Scene {
     constructor() {
         super();
-        this.map = new MyMap();
+        this.map = new GameMap();
+        this.colorMap = new ColorMap();
         this.startX = -1;
         this.startY = -1;
     }
@@ -126,7 +51,6 @@ class MyScene extends Phaser.Scene {
         this.acorns.splice(this.acorns.indexOf(acorn), 1);
         if (this.acorns.length > 0) {
             this.updateMessage("Yum!");
-            this.clearMap();
         } else {
             this.updateMessage("Yummy, but I'm full now. Time to take a nap.");
         }
@@ -189,7 +113,7 @@ class MyScene extends Phaser.Scene {
     }
 
     drawTriangle(g, c1, x, y, v1, v2, v3) {
-        g.fillStyle(colorMap.getColorFor(c1));
+        g.fillStyle(this.colorMap.getColorFor(c1));
         g.beginPath();
         g.moveTo(x*rectSize+rectSize*v1[0], y*rectSize+rectSize*v1[1]);
         g.lineTo(x*rectSize+rectSize*v2[0], y*rectSize+rectSize*v2[1]);
@@ -201,25 +125,28 @@ class MyScene extends Phaser.Scene {
     update() {
         this.movePlayer();
         if (this.playerIsOutOfBounds()) {
-            this.regenerateMap();
+            this.moveScreen();
             this.player.x = 30;
             this.player.y = 30;
         }
     }
 
-    clearMap() {
+    moveScreen() {
         this.mapObjs.forEach(obj => {
             obj.destroy();
         });
-    }
-
-    regenerateMap() {
         this.map.resetMap();
         this.drawMap();
     }
 
     playerIsOutOfBounds() {
-        return !this.map.inScreenBounds(this.player.x, this.player.y);
+        return !this.inScreenBounds(this.player.x, this.player.y);
+    }
+
+    inScreenBounds(px, py) {
+        let x = Math.floor(px / rectSize);
+        let y = Math.floor(py / rectSize);
+        return this.map.inMapBounds(x, y);
     }
 
     movePlayer() {

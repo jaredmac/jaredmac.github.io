@@ -11,8 +11,4 @@ class ColorMap {
     getColorFor(cell) {
         return '0x' + this.colorMap[cell];
     }
-
-    getCssColorFor(cell) {
-        return "#" + this.colorMap[cell];
-    }
 }
