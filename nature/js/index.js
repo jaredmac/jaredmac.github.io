@@ -14,9 +14,11 @@ class MyMap {
     constructor() {
         this.width = mapWidth;
         this.height = mapHeight;
+        this.resetMap();
+    }
 
+    resetMap() {
         this.map = [];
-
         const perlin = new PerlinNoise();
         for (let y = 0; y < this.height; y++) {
             const row = [];
@@ -49,8 +51,8 @@ class MyMap {
     }
 
     getIfMatching(x, y, dx, dy) {
-        let result = new Array();
-        if (this.inBounds(x+dx, y+dy) 
+        let result = [];
+        if (this.inMapBounds(x+dx, y+dy) 
             && this.map[y][x] != this.map[y][x+dx]
             && this.map[y][x+dx] == this.map[y+dy][x] 
             && this.map[y][x+dx] == this.map[y+dy][x+dx]) {
@@ -60,19 +62,20 @@ class MyMap {
         return result;
     }
 
-    inBounds(x, y) {
+    inMapBounds(x, y) {
         return x >= 0 && x < this.width && y >= 0 && y < this.height;
+    }
+
+    inScreenBounds(px, py) {
+        let x = Math.floor(px / rectSize);
+        let y = Math.floor(py / rectSize);
+        return this.inMapBounds(x, y);
     }
 
     getColorAt(x, y) {
         return colorMap.getColorFor([this.map[y][x]]);
     }
     
-    isWaterAt(px, py) {
-        let x = Math.floor(px / rectSize);
-        let y = Math.floor(py / rectSize);
-        return this.inBounds(x, y) && this.map[y][x] == 'W';
-    }
 }
 
 class MyScene extends Phaser.Scene {
@@ -87,10 +90,37 @@ class MyScene extends Phaser.Scene {
         this.load.image("grass", "./images/grass.png");
         this.load.image("grass2", "./images/grass2.png");
         this.load.image('squirrel', './images/squirrel.png');
+        this.load.image('acorn', './images/acorn.png');
     }
 
     create() {
-        // Draw map
+        this.drawMap();
+
+        // Create player at the center of the map for now
+        this.player = this.physics.add.sprite(mapWidth / 2 * rectSize, mapHeight / 2 * rectSize, 'squirrel');
+
+        // Randomly place some acorns
+        this.placeAcorns();
+
+        // Listen to cursor
+        this.cursors = this.input.keyboard.createCursorKeys();
+    }
+
+    placeAcorns() {
+        this.acorns = [];
+        for (var i = 0; i < 4; i++) {
+            let x = Math.random() * this.map.width;
+            let y = Math.random() * this.map.height;
+            this.acorns.push(this.physics.add.sprite(x * rectSize, y * rectSize, 'acorn'));
+        }
+        this.physics.add.overlap(this.player, this.acorns, this.collectAcorn, null, this);
+    }
+
+    collectAcorn(player, acorn) {
+        acorn.disableBody(true, true);
+    }
+
+    drawMap() {
         for (var y = 0; y < this.map.height; y++) {
             for (var x = 0; x < this.map.width; x++) { 
                 var types = this.map.getLeftAndBelowIfMatching(x, y);
@@ -106,26 +136,34 @@ class MyScene extends Phaser.Scene {
                         } else {
                             let color = this.map.getColorAt(x, y);
                             let rect = new Phaser.GameObjects.Rectangle(this, 
-                                x*rectSize, y*rectSize, 
-                                rectSize, rectSize, color).setOrigin(0, 0);
+                                x*rectSize, 
+                                y*rectSize, 
+                                rectSize, 
+                                rectSize, color).setOrigin(0, 0);
                             this.add.existing(rect);
                         }
                     }
                 }
             }
         }
-
-        // Create player at the center of the map for now
-        this.player = this.physics.add.sprite(mapWidth / 2 * rectSize, mapHeight / 2 * rectSize, 'squirrel');
-
-        // Listen to cursor
-        this.cursors = this.input.keyboard.createCursorKeys();
     }
 
     update() {
         this.movePlayer();
-        if (this.map.isWaterAt(this.player.body.x, this.player.body.y)) {
+        if (this.playerIsOutOfBounds()) {
+            this.regenerateMap();
+            this.player.x = 30;
+            this.player.y = 30;
         }
+    }
+
+    regenerateMap() {
+        this.map.resetMap();
+        this.drawMap();
+    }
+
+    playerIsOutOfBounds() {
+        return !this.map.inScreenBounds(this.player.x, this.player.y);
     }
 
     movePlayer() {
