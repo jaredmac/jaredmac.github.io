@@ -9,6 +9,7 @@ class MyScene extends Phaser.Scene {
         this.colorMap = new ColorMap();
         this.startX = -1;
         this.startY = -1;
+        this.acornsEaten = 0;
     }
 
     preload() {
@@ -21,8 +22,8 @@ class MyScene extends Phaser.Scene {
     create() {
         this.drawMap();
 
-        // Create player at the center of the map for now
-        this.player = this.physics.add.sprite(mapWidth / 2 * rectSize, mapHeight / 2 * rectSize, 'squirrel');
+        // Create player at the center of the map
+        this.createPlayer(mapWidth / 2 * rectSize, mapHeight / 2 * rectSize);
 
         // Randomly place some acorns
         this.placeAcorns();
@@ -32,6 +33,11 @@ class MyScene extends Phaser.Scene {
 
         // Starting message
         this.updateMessage("Help me find some nuts to eat!");
+    }
+
+    createPlayer(x, y) {
+        this.player = this.physics.add.sprite(x, y, 'squirrel');
+        this.mapObjs.push(this.player);
     }
 
     placeAcorns() {
@@ -47,12 +53,17 @@ class MyScene extends Phaser.Scene {
     }
 
     collectAcorn(player, acorn) {
-        acorn.disableBody(true, true);
-        this.acorns.splice(this.acorns.indexOf(acorn), 1);
-        if (this.acorns.length > 0) {
-            this.updateMessage("Yum!");
+        if (this.acornsEaten < 4) {
+            acorn.disableBody(true, true);
+            this.acorns.splice(this.acorns.indexOf(acorn), 1);
+            this.acornsEaten++;
+            if (this.acornsEaten == 4) {
+                this.updateMessage("Yum, but I'm full now. Time to take a nap.");
+            } else {
+                this.updateMessage("Yum!");
+            }
         } else {
-            this.updateMessage("Yummy, but I'm full now. Time to take a nap.");
+            this.updateMessage("I can't eat any more.");
         }
     }
 
@@ -125,28 +136,38 @@ class MyScene extends Phaser.Scene {
     update() {
         this.movePlayer();
         if (this.playerIsOutOfBounds()) {
-            this.moveScreen();
-            this.player.x = 30;
-            this.player.y = 30;
+            this.moveScreen(this.player.x, this.player.y);
         }
     }
 
-    moveScreen() {
+    moveScreen(newPlayerX, newPlayerY) {
         this.mapObjs.forEach(obj => {
             obj.destroy();
         });
         this.map.resetMap();
         this.drawMap();
+
+        // Compute the new player location
+        if (newPlayerX < 0) {
+            newPlayerX = gameWidth - rectSize;
+        } else if (newPlayerX > gameWidth) {
+            newPlayerX = 0;
+        }
+        if (newPlayerY < 0) {
+            newPlayerY = gameHeight - rectSize;
+        } else if (newPlayerY > gameHeight) {
+            newPlayerY = 0;
+        }
+        this.createPlayer(newPlayerX, newPlayerY);
+        this.placeAcorns();
     }
 
     playerIsOutOfBounds() {
         return !this.inScreenBounds(this.player.x, this.player.y);
     }
 
-    inScreenBounds(px, py) {
-        let x = Math.floor(px / rectSize);
-        let y = Math.floor(py / rectSize);
-        return this.map.inMapBounds(x, y);
+    inScreenBounds(x, y) {
+        return x >= 0 && x < gameWidth && y >= 0 && y < gameHeight;
     }
 
     movePlayer() {
