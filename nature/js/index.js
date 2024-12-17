@@ -42,7 +42,7 @@ class MyScene extends Phaser.Scene {
 
     placeAcorns() {
         this.acorns = [];
-        for (var i = 0; i < 4; i++) {
+        if (Math.random() > .7) {
             let x = Math.random() * this.map.width;
             let y = Math.random() * this.map.height;
             let acorn = this.physics.add.sprite(x * rectSize, y * rectSize, 'acorn');
@@ -172,19 +172,19 @@ class MyScene extends Phaser.Scene {
 
     movePlayer() {
         // Keyboard input
-        let dx = 40;
+        let maxVelocity = 60;
         if (this.cursors.left.isDown) {
-            this.player.body.velocity.x = -dx;
+            this.player.body.velocity.x = -maxVelocity;
         } else if (this.cursors.right.isDown) {
-            this.player.body.velocity.x = dx;
+            this.player.body.velocity.x = maxVelocity;
         } else {
             this.player.body.velocity.x = 0;
         }
 
         if (this.cursors.up.isDown) {
-            this.player.body.velocity.y = -dx;
+            this.player.body.velocity.y = -maxVelocity;
         } else if (this.cursors.down.isDown) {
-            this.player.body.velocity.y = dx;
+            this.player.body.velocity.y = maxVelocity;
         } else {
             this.player.body.velocity.y = 0;
         }
@@ -197,13 +197,20 @@ class MyScene extends Phaser.Scene {
             } else {
                 let dx = (this.input.pointer1.worldX - this.startX) * 2;
                 let dy = (this.input.pointer1.worldY - this.startY) * 2;
-                this.player.body.velocity.x = dx;
-                this.player.body.velocity.y = dy;
+                this.player.body.velocity.x = this.clamp(dx, -maxVelocity, maxVelocity);
+                this.player.body.velocity.y = this.clamp(dy, -maxVelocity, maxVelocity);
             }
         } else {
             this.startX = -1;
             this.startY = -1;
         }
+
+        // Flip the sprite accordingly
+        this.player.flipX = this.player.body.velocity.x > 0 ? true : false;
+    }
+
+    clamp(num, min, max) {
+        return Math.min(Math.max(num, min), max);
     }
 }
 
