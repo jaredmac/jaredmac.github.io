@@ -10,6 +10,10 @@ class GameMap {
         this.resetMap();
     }
 
+    darken() {
+        this.colorMap.darken();
+    }
+
     resetMap() {
         this.map = [];
         const perlin = new PerlinNoise();
@@ -32,7 +36,14 @@ class GameMap {
     }
 
     getCellAt(x, y) {
-        return this.map[y][x];
+        if (this.inMapBounds(x, y)) {
+            return this.map[y][x];
+        }
+        return " ";
+    }
+
+    getColorFor(cell) {
+        return this.colorMap.getColorFor(cell);
     }
 
     getLeftAndBelowIfMatching(x, y) {

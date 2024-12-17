@@ -6,7 +6,6 @@ class MyScene extends Phaser.Scene {
     constructor() {
         super();
         this.map = new GameMap();
-        this.colorMap = new ColorMap();
         this.startX = -1;
         this.startY = -1;
         this.acornsEaten = 0;
@@ -86,12 +85,12 @@ class MyScene extends Phaser.Scene {
                     if (types.length == 2) {
                         this.drawRightAndBelowTriangles(x, y, types[0], types[1]);
                     } else {
-                        if (this.map.getCellAt(x, y) == 'M' && Math.random() > .95) {
+                        /*if (this.map.getCellAt(x, y) == 'M' && Math.random() > .95) {
                             let image = this.add.image(x*rectSize, 
                                 y*rectSize, 
                                 Math.random() > .5 ? "grass" : "grass2").setOrigin(0, 0);
                             this.mapObjs.push(image);
-                        } else {
+                        } else {*/
                             let color = this.map.getColorAt(x, y);
                             let rect = new Phaser.GameObjects.Rectangle(this, 
                                 x*rectSize, 
@@ -100,7 +99,7 @@ class MyScene extends Phaser.Scene {
                                 rectSize, color).setOrigin(0, 0);
                             this.mapObjs.push(rect);
                             this.add.existing(rect);
-                        }
+                        //}
                     }
                 }
             }
@@ -124,7 +123,7 @@ class MyScene extends Phaser.Scene {
     }
 
     drawTriangle(g, c1, x, y, v1, v2, v3) {
-        g.fillStyle(this.colorMap.getColorFor(c1));
+        g.fillStyle(this.map.getColorFor(c1));
         g.beginPath();
         g.moveTo(x*rectSize+rectSize*v1[0], y*rectSize+rectSize*v1[1]);
         g.lineTo(x*rectSize+rectSize*v2[0], y*rectSize+rectSize*v2[1]);
@@ -145,18 +144,19 @@ class MyScene extends Phaser.Scene {
             obj.destroy();
         });
         this.map.resetMap();
+        this.map.darken();
         this.drawMap();
 
         // Compute the new player location
         if (newPlayerX < 0) {
-            newPlayerX = gameWidth - rectSize;
-        } else if (newPlayerX > gameWidth) {
-            newPlayerX = 0;
+            newPlayerX = gameWidth - rectSize*2;
+        } else if (newPlayerX >= gameWidth) {
+            newPlayerX = rectSize;
         }
         if (newPlayerY < 0) {
-            newPlayerY = gameHeight - rectSize;
-        } else if (newPlayerY > gameHeight) {
-            newPlayerY = 0;
+            newPlayerY = gameHeight - rectSize*2;
+        } else if (newPlayerY >= gameHeight) {
+            newPlayerY = rectSize;
         }
         this.createPlayer(newPlayerX, newPlayerY);
         this.placeAcorns();
@@ -171,8 +171,17 @@ class MyScene extends Phaser.Scene {
     }
 
     movePlayer() {
+        var maxVelocity = 60;
+
+        // Check location
+        if (this.map.getCellAt(Math.floor(this.player.x / rectSize), Math.floor(this.player.y / rectSize)) == 'W') {
+            this.updateMessage("I can't swim!");
+            this.player.body.velocity.x /= 2;
+            this.player.body.velocity.y /= 2;
+            maxVelocity = 20;
+        }
+
         // Keyboard input
-        let maxVelocity = 60;
         if (this.cursors.left.isDown) {
             this.player.body.velocity.x = -maxVelocity;
         } else if (this.cursors.right.isDown) {
@@ -204,7 +213,7 @@ class MyScene extends Phaser.Scene {
             this.startX = -1;
             this.startY = -1;
         }
-
+        
         // Flip the sprite accordingly
         this.player.flipX = this.player.body.velocity.x > 0 ? true : false;
     }
