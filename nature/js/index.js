@@ -88,7 +88,7 @@ class MyScene extends Phaser.Scene {
         if (!this.readyToNap) {
             this.updateMessage("A nice tree, but I'm not tired!");
         } else {
-            this.updateMessage("Ahhh.... a nice place to take a nap.");
+            this.updateMessage("Ahh, finally...a nice place to take a nap.");
         }
     }
 
