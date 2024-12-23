@@ -10,6 +10,7 @@ class MyScene extends Phaser.Scene {
         this.startY = -1;
         this.acornsEaten = 0;
         this.readyToNap = false;
+        this.timeoutId = 0;
     }
 
     preload() {
@@ -85,16 +86,15 @@ class MyScene extends Phaser.Scene {
     }
 
     considerNap(player, tree) {
-        if (!this.readyToNap) {
-            this.updateMessage("A nice tree, but I'm not tired!");
-        } else {
+        if (this.readyToNap) {
             this.updateMessage("Ahh, finally...a nice place to take a nap.");
         }
     }
 
     updateMessage(message) {
+        clearTimeout(this.timeoutId);
         document.getElementById('game-message').innerHTML = message;
-        setTimeout(function() {
+        this.timeoutId = setTimeout(function() {
             document.getElementById('game-message').innerHTML = "";
         }, 5000);
     }

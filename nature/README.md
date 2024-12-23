@@ -14,4 +14,4 @@ python -m http.server 8000
 7. X Character can move onto different screens
 8. Allow squirrel to "drink" from water
 9. X Add nuts squirrel can discover and eat
-10. Time passes - changes colors of tiles
+10. X Time passes - changes colors of tiles
