@@ -6,7 +6,7 @@ body {
   background-color: black;
 }
 #game-container {
-  margin: 20px;
+  /*margin: 20px;*/
   text-align: center;
 }
 #game-message {

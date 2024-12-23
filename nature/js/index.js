@@ -12,10 +12,9 @@ class MyScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("grass", "./images/grass.png");
-        this.load.image("grass2", "./images/grass2.png");
         this.load.image('squirrel', './images/squirrel.png');
         this.load.image('acorn', './images/acorn.png');
+        this.load.image('tree', './images/tree.png');
     }
 
     create() {
@@ -26,6 +25,9 @@ class MyScene extends Phaser.Scene {
 
         // Randomly place some acorns
         this.placeAcorns();
+
+        // Randomly place some trees
+        this.placeTrees();
 
         // Listen to cursor
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -65,6 +67,19 @@ class MyScene extends Phaser.Scene {
             this.updateMessage("I can't eat any more.");
         }
     }
+    
+    placeTrees() {
+        this.trees = [];
+        for (var i = 0; i < 4; i++) {
+            if (Math.random() > .2) {
+                let x = Math.random() * this.map.width;
+                let y = Math.random() * this.map.height;
+                let tree = this.physics.add.sprite(x * rectSize, y * rectSize, 'tree');
+                this.trees.push(tree);
+                this.mapObjs.push(tree);
+            }
+        }
+    }
 
     updateMessage(message) {
         document.getElementById('game-message').innerHTML = message;
@@ -85,21 +100,14 @@ class MyScene extends Phaser.Scene {
                     if (types.length == 2) {
                         this.drawRightAndBelowTriangles(x, y, types[0], types[1]);
                     } else {
-                        /*if (this.map.getCellAt(x, y) == 'M' && Math.random() > .95) {
-                            let image = this.add.image(x*rectSize, 
-                                y*rectSize, 
-                                Math.random() > .5 ? "grass" : "grass2").setOrigin(0, 0);
-                            this.mapObjs.push(image);
-                        } else {*/
-                            let color = this.map.getColorAt(x, y);
-                            let rect = new Phaser.GameObjects.Rectangle(this, 
-                                x*rectSize, 
-                                y*rectSize, 
-                                rectSize, 
-                                rectSize, color).setOrigin(0, 0);
-                            this.mapObjs.push(rect);
-                            this.add.existing(rect);
-                        //}
+                        let color = this.map.getColorAt(x, y);
+                        let rect = new Phaser.GameObjects.Rectangle(this, 
+                            x*rectSize, 
+                            y*rectSize, 
+                            rectSize, 
+                            rectSize, color).setOrigin(0, 0);
+                        this.mapObjs.push(rect);
+                        this.add.existing(rect);
                     }
                 }
             }
@@ -160,6 +168,7 @@ class MyScene extends Phaser.Scene {
         }
         this.createPlayer(newPlayerX, newPlayerY);
         this.placeAcorns();
+        this.placeTrees();
     }
 
     playerIsOutOfBounds() {
@@ -175,10 +184,10 @@ class MyScene extends Phaser.Scene {
 
         // Check location
         if (this.map.getCellAt(Math.floor(this.player.x / rectSize), Math.floor(this.player.y / rectSize)) == 'W') {
-            this.updateMessage("I can't swim!");
+            this.updateMessage("I can only swim for a minute!");
             this.player.body.velocity.x /= 2;
             this.player.body.velocity.y /= 2;
-            maxVelocity = 20;
+            maxVelocity = 10;
         }
 
         // Keyboard input
