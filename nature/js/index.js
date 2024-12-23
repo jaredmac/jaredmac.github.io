@@ -9,6 +9,7 @@ class MyScene extends Phaser.Scene {
         this.startX = -1;
         this.startY = -1;
         this.acornsEaten = 0;
+        this.readyToNap = false;
     }
 
     preload() {
@@ -60,6 +61,7 @@ class MyScene extends Phaser.Scene {
             this.acornsEaten++;
             if (this.acornsEaten == 4) {
                 this.updateMessage("Yum, but I'm full now. Time to take a nap.");
+                this.readyToNap = true;
             } else {
                 this.updateMessage("Yum!");
             }
@@ -78,6 +80,15 @@ class MyScene extends Phaser.Scene {
                 this.trees.push(tree);
                 this.mapObjs.push(tree);
             }
+        }
+        this.physics.add.overlap(this.player, this.trees, this.considerNap, null, this);
+    }
+
+    considerNap(player, tree) {
+        if (!this.readyToNap) {
+            this.updateMessage("A nice tree, but I'm not tired!");
+        } else {
+            this.updateMessage("Ahhh.... a nice place to take a nap.");
         }
     }
 
