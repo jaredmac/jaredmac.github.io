@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>my-crossy-road-game</title>
+    <script type="module" crossorigin src="/assets/index-Ceb2dyvY.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Ck4VVFrt.css">
+  </head>
+  <body>  
+    <canvas class="game"></canvas>
+    <div id="controls">
+      <div>
+        <button id="forward">▲</button>
+        <button id="left">⯇</button>
+        <button id="backward">▼</button>  
+        <button id="right">⯈</button> 
+      </div>
+    </div>
+    <div id="score">0</div>
+    <div id="game-over">
+      <div>Game Over</div>
+      <div>Final Score: <span id="final-score">0</span></div>
+      <button id="restart-button" onclick="location.reload()">Restart</button>
+    </div>
+  </body>
+</html>
