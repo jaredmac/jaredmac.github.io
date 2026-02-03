@@ -6,7 +6,7 @@ function createLetterElement(size, clazz) {
     el.style.lineHeight = (size - 5) + 'px';
     el.style.fontSize = Math.floor(size / 2) + 'px';
     el.textContent = ' ';
-    return el;
+    return el; 
 }
 
 class Tile {
