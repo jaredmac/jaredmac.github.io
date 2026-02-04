@@ -8,7 +8,6 @@ import { animateVehicles } from "./animateVehicles.js";
 import { animatePlayer } from "./animatePlayer.js";
 import { hitTest } from "./hitTest.js";
 import "./collectUserInput.js";
-import './style.css'
 
 const scene = new THREE.Scene();
 scene.add(player);
