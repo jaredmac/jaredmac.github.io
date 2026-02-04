@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { metadata as rows } from "./components/Map";
-import { player, position } from "./components/Player";
+import { metadata as rows } from "./components/Map.js";
+import { player, position } from "./components/Player.js";
 
 export function hitTest() {
     let hit = false;

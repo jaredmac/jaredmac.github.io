@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { tilesPerRow, tileSize } from '../constants';
+import { tilesPerRow, tileSize } from '../constants.js';
 
 export function Grass(rowIndex) {
     const grass = new THREE.Group();

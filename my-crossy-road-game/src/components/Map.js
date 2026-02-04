@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { Grass } from "./Grass";
-import { Tree } from "./Tree";
-import { Road } from "./Road";
-import { Car } from "./Car";
-import { Truck } from "./Truck";
-import { minTileIndex, maxTileIndex } from "../constants";
+import { Grass } from "./Grass.js";
+import { Tree } from "./Tree.js";
+import { Road } from "./Road.js";
+import { Car } from "./Car.js";
+import { Truck } from "./Truck.js";
+import { minTileIndex, maxTileIndex } from "../constants.js";
 
 export const metadata = [];
 export const map = new THREE.Group();
