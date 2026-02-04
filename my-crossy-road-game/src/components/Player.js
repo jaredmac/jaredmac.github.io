@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { metadata, addRows } from "./Map";
-import { Position } from "./Position";
+import { metadata, addRows } from "./Map.js";
+import { Position } from "./Position.js";
 
 export const player = Player();
 export const position = new Position(0, 0);

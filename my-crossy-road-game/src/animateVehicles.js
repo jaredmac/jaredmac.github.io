@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { metadata as rows } from "./components/Map";
-import { minTileIndex, maxTileIndex, tileSize } from "./constants";
+import { metadata as rows } from "./components/Map.js";
+import { minTileIndex, maxTileIndex, tileSize } from "./constants.js";
 
 const clock = new THREE.Clock();
 
