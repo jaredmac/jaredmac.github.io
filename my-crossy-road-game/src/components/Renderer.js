@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 
 export function Renderer() {
     const canvas = document.querySelector("canvas.game");

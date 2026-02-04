@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 
 export function DirectionalLight() {
     const dirLight = new THREE.DirectionalLight();

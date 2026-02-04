@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from 'three';
 import { metadata as rows } from "./components/Map";
 import { minTileIndex, maxTileIndex, tileSize } from "./constants";
 
