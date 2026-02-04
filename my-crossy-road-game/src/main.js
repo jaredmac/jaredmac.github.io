@@ -26,7 +26,7 @@ player.add(camera);
 initializeGame();
 function initializeGame() {
   initializeMap();
-  console.log(__THREE__);
+  console.log("In initializeGame(): " + __THREE__);
 }
 
 const renderer = Renderer();
