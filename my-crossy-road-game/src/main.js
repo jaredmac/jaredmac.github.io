@@ -1,12 +1,12 @@
 import * as THREE from 'three';
-import { Renderer } from "./components/Renderer";
-import { Camera } from "./components/Camera";
-import { DirectionalLight } from "./components/DirectionalLight";
-import { player } from "./components/Player";
-import { map, initializeMap } from "./components/Map";
-import { animateVehicles } from "./animateVehicles";
-import { animatePlayer } from "./animatePlayer";
-import { hitTest } from "./hitTest";
+import { Renderer } from "./components/Renderer.js";
+import { Camera } from "./components/Camera.js";
+import { DirectionalLight } from "./components/DirectionalLight.js";
+import { player } from "./components/Player.js";
+import { map, initializeMap } from "./components/Map.js";
+import { animateVehicles } from "./animateVehicles.js";
+import { animatePlayer } from "./animatePlayer.js";
+import { hitTest } from "./hitTest.js";
 import "./collectUserInput.js";
 import './style.css'
 
