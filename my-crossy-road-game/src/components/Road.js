@@ -14,7 +14,12 @@ export function Road(rowIndex) {
     
     road.add(foundation);
     
-    const label = new StreetLabel(road, "Reed Street");
+    const labelName = randomElement(["Reed Street", "Rindge Ave", "Mass Ave", "Cedar St" ]);
+    new StreetLabel(road, labelName);
 
     return road;
+}
+
+function randomElement(array) {
+    return array[Math.floor(Math.random() * array.length)];
 }
