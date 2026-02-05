@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { StreetLabel } from "./StreetLabel.js";
 import { tilesPerRow, tileSize } from '../constants.js';
 
 export function Road(rowIndex) {
