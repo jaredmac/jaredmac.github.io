@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { StreetLabel } from "./StreetLabel.js";
 import { tilesPerRow, tileSize } from '../constants.js';
 
 export function Road(rowIndex) {
@@ -12,6 +13,8 @@ export function Road(rowIndex) {
     foundation.receiveShadow = true;
     
     road.add(foundation);
+    
+    const label = new StreetLabel(road, "Reed Street");
 
     return road;
 }
