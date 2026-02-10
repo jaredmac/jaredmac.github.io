@@ -4,6 +4,7 @@ body {
   margin: 0;
   display: flex;
   font-family: "Press Start 2P", cursive;
+  touch-action: manipulation;
 }
 
 #controls {
