@@ -15,7 +15,7 @@ export function Road(rowIndex) {
     road.add(foundation);
     
     const labelName = randomElement(["Reed Street", "Rindge Ave", "Mass Ave", "Cedar St" ]);
-    new StreetLabel(road, labelName);
+    StreetLabel(road, labelName); // async, but we don't need to await
 
     return road;
 }

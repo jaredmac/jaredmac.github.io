@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 
-export function StreetLabel(parent, text) {
+export async function StreetLabel(parent, text) {
+    const TextGeometry = (await import('https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/geometries/TextGeometry.js')).TextGeometry;
+    const FontLoader = (await import('https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/loaders/FontLoader.js')).FontLoader;
+    
     const loader = new FontLoader();
     loader.load("https://cdn.jsdelivr.net/npm/three@0.182.0/examples/fonts/helvetiker_regular.typeface.json",
         function (font) {   
