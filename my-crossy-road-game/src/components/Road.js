@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { tilesPerRow, tileSize } from '../constants.js';
+import { StreetLabel } from './StreetLabel.js';
 
 export function Road(rowIndex) {
     const road = new THREE.Group();
@@ -14,7 +15,7 @@ export function Road(rowIndex) {
     road.add(foundation);
     
     const labelName = randomElement(["Reed Street", "Rindge Ave", "Mass Ave", "Cedar St" ]);
-    //new StreetLabel(road, labelName);
+    new StreetLabel(road, labelName);
 
     return road;
 }
