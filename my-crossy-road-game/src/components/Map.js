@@ -2,8 +2,6 @@ import * as THREE from 'three';
 import { Grass } from "./Grass.js";
 import { Tree } from "./Tree.js";
 import { Road } from "./Road.js";
-import { Car } from "./Car.js";
-import { Truck } from "./Truck.js";
 import { minTileIndex, maxTileIndex } from "../constants.js";
 
 export const metadata = [];
@@ -38,35 +36,12 @@ export function doMetadata(newMetadata, startIndex) {
             map.add(grass);
         }
 
-        if (rowData.type === "car") {
-            const road = Road(rowIndex);
-            rowData.vehicles.forEach((vehicle) => {
-                const car = Car(
-                    vehicle.initialTileIndex, 
-                    rowData.direction, 
-                    vehicle.color);
-                vehicle.ref = car;
-                road.add(car);
-            });
+        if (rowData.type === "car" || rowData.type === "truck") {
+            const road = Road(rowIndex, rowData.direction, rowData.type, rowData.vehicles);
             map.add(road);   
         }
-
-        if (rowData.type === "truck") {
-            const road = Road(rowIndex);
-            rowData.vehicles.forEach((vehicle) => {
-                const truck = Truck(
-                    vehicle.initialTileIndex, 
-                    rowData.direction, 
-                    vehicle.color);
-                vehicle.ref = truck;
-                road.add(truck);
-            });
-            map.add(road);   
-        }
-
     });
 }
-
 
 export function generateRows(amount) {
     const rows = [];
@@ -79,10 +54,8 @@ export function generateRows(amount) {
 
 function generateRow() {
     const type = randomElement(["car", "truck", "forest"]);
-    if (type === "car") {
-        return generateVehicleMetadata("car");
-    } else if (type === "truck") {
-        return generateVehicleMetadata("truck");
+    if (type === "car" || type === "truck") {
+        return generateVehicleMetadata(type);
     } else {
         return generateForestMetadata();
     }   

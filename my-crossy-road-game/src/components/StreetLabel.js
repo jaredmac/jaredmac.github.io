@@ -7,7 +7,6 @@ export async function StreetLabel(parent, text) {
     const loader = new FontLoader();
     loader.load("https://cdn.jsdelivr.net/npm/three@0.182.0/examples/fonts/helvetiker_regular.typeface.json",
         function (font) {   
-            console.log("font is " + font);
             const geometry = new TextGeometry(text, {
                 font: font,
                 size: 20,
