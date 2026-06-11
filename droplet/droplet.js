@@ -9,6 +9,21 @@ function createLetterElement(size, clazz) {
     return el; 
 }
 
+function getGameBoardSize() {
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    if (vw <= 360 || vh <= 700) {
+        return 54;
+    }
+    if (vw <= 420 || vh <= 750) {
+        return 60;
+    }
+    if (vw <= 520 || vh <= 820) {
+        return 68;
+    }
+    return 80;
+}
+
 class Tile {
     constructor(boardElem, correctLetter, gridSize, listener) {
         this.letter = ' ';
@@ -390,7 +405,7 @@ function init(daily) {
     globals.b = new Board(document.getElementById('board'), 
         wordChoices[i].slice(0, 4),
         wordChoices[i].slice(4)[0],
-        80, true);
+        getGameBoardSize(), true);
     globals.b.pickNextLetterAtRandom();
 }
 
