@@ -357,13 +357,13 @@ body.dark-mode {
 }
 
 .dark-mode .filled {
-    background: #333;
-    border: 4px solid #333;
+    background: #4a4a4a;
+    border: 4px solid #4a4a4a;
 }
 
 .filled {
-    background: #666;
-    border: 4px solid #666;
+    background: #999;
+    border: 4px solid #999;
 }
 
 .dark-mode .correct {
