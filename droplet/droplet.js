@@ -128,7 +128,7 @@ class Board {
         boardElem.classList.add('board');
         boardElem.style.gridTemplateColumns = 'repeat(4, ' + gridSize + 'px)';
         boardElem.style.columnGap = (gridSize / 8) + 'px';
-        boardElem.style.rowGap = (gridSize / 5) + 'px';
+        boardElem.style.rowGap = (gridSize / 4) + 'px';
         el.appendChild(boardElem);
 
         this.grid = new Array(4);
@@ -500,5 +500,9 @@ function hide(id) {
 
 function show(id) {
     let el = document.getElementById(id);
-    el.style.display = 'block';
+    if (id === 'belowBoard') {
+        el.style.display = 'flex';
+    } else {
+        el.style.display = 'block';
+    }
 }

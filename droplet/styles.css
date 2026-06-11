@@ -204,6 +204,10 @@ body.dark-mode {
         width: 26px;
         margin-left: 8px;
     }
+
+    #belowBoard {
+        margin-top: 0.75rem;
+    }
 }
 
 @media (max-height: 720px) {
@@ -417,6 +421,23 @@ body.dark-mode {
 #tryAgainContent, #congratulationsContent, #theme, #timer, #belowBoard {
     display: none;
     padding: 10px;
+}
+
+#belowBoard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 0 10px 10px;
+}
+
+#belowBoard #timer {
+    margin: 0;
+}
+
+#belowBoard .button {
+    margin: 0;
 }
 
 #congratulationsContent span {
