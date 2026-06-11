@@ -1,10 +1,28 @@
 /*
  * Intro screen that plays a dummy version of the game.
- */ 
+ */
+
+function getPreviewBoardSize() {
+    const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    if (viewportWidth >= 1200) {
+        return 80;
+    }
+    if (viewportWidth >= 992) {
+        return 70;
+    }
+    if (viewportWidth >= 768) {
+        return 60;
+    }
+    if (viewportWidth >= 576) {
+        return 50;
+    }
+    return 40;
+}
+
 class Intro {
     constructor(id, delay) {
         let boardEl = document.getElementById(id);
-        this.board = new Board(boardEl, ["PLAY", "THIS", "WORD", "GAME"], "intro", 30, false);
+        this.board = new Board(boardEl, ["PLAY", "THIS", "WORD", "GAME"], "intro", getPreviewBoardSize(), false, true);
         this.script = [
             "M",2,"G",0,"W",0,"E",3,
             "D",3,"A",1,"R",2,"O",1,
@@ -31,7 +49,7 @@ class Intro {
  */
 function showBoard(id, words, theme) {
     let boardEl = document.getElementById(id);
-    let board = new Board(boardEl, words, theme, 30, false);
+    let board = new Board(boardEl, words, theme, getPreviewBoardSize(), false);
     board.revealAll();
 }
 
@@ -40,7 +58,7 @@ function showBoard(id, words, theme) {
  */
 function showPartialBoard(id, words, theme) {
     let boardEl = document.getElementById(id);
-    let board = new Board(boardEl, words, theme, 30, false);
+    let board = new Board(boardEl, words, theme, getPreviewBoardSize(), false);
     board.pickNextLetter("A");
     board.dropAt(2);
     board.pickNextLetter("N");

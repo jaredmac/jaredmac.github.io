@@ -21,7 +21,6 @@ export function Road(rowIndex, direction, vehicleType, vehicles) {
 
     // Add the vehicles to the road
     vehicles.forEach((vehicleData) => {
-        console.log("vehicleData.direction is " + vehicleData.direction);
         const vehicle = vehicleType === "car" 
             ? Car(vehicleData.initialTileIndex, 
                 direction, 

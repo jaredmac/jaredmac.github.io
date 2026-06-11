@@ -94,18 +94,17 @@ class Timer {
 }
 
 class Board {
-    constructor(el, answers, theme, gridSize, interactive) {
+    constructor(el, answers, theme, gridSize, interactive, showCurrentLetter = interactive) {
         this.answers = answers;
         this.theme = theme;
         this.attempt = 1;
         this.interactive = interactive;
         this.resetAvailableLetters();
 
-        // Create the current letter above the board. Don't show it 
-        // if not interactive to save space
+        // Create the current letter above the board.
         this.letterElem = createLetterElement(gridSize, 'currentLetter');
         el.textContent = '';
-        if (interactive) {
+        if (showCurrentLetter) {
             el.appendChild(this.letterElem);
         }
 
@@ -113,7 +112,8 @@ class Board {
         let boardElem = document.createElement('div');
         boardElem.classList.add('board');
         boardElem.style.gridTemplateColumns = 'repeat(4, ' + gridSize + 'px)';
-        boardElem.style.gap = (gridSize / 8) + 'px';
+        boardElem.style.columnGap = (gridSize / 8) + 'px';
+        boardElem.style.rowGap = (gridSize / 5) + 'px';
         el.appendChild(boardElem);
 
         this.grid = new Array(4);
@@ -271,22 +271,67 @@ class Board {
     }
 
     dropAt(c) {
+        if (this.animating) {
+            return;
+        }
+
         // Start the timer at the first letter drop (a la NYTimes crossword)
         this.startTimerIfNotAlready();
         let r = this.getAvailableRowInColumn(c);
-        if (r != -1) {
-            this.grid[r][c].dropLetter(this.letter);
-            this.availableLetters = this.availableLetters.replace(this.letter, '');
-            if (r - 1 >= 0) {
-                this.availableLetters = this.availableLetters + this.answers[r - 1].charAt(c);
-            }
-            if (this.availableLetters.length == 0) {
-                this.setCurrentLetter(' ');
-                this.endGame();
-            } else { 
-                this.pickNextLetterAtRandom();
-            }
+        if (r == -1) {
+            return;
         }
+
+        const targetTile = this.grid[r][c].tile;
+        const letter = this.letter;
+        const current = this.letterElem;
+        const startRect = current.getBoundingClientRect();
+        const endRect = targetTile.getBoundingClientRect();
+        const clone = current.cloneNode(true);
+        const that = this;
+
+        clone.classList.add('drop-animation');
+        clone.style.left = `${startRect.left}px`;
+        clone.style.top = `${startRect.top}px`;
+        clone.style.width = `${startRect.width}px`;
+        clone.style.height = `${startRect.height}px`;
+        clone.style.lineHeight = `${startRect.height - 5}px`;
+        clone.style.fontSize = window.getComputedStyle(current).fontSize;
+        clone.style.margin = '0';
+        clone.style.opacity = '1';
+        document.body.appendChild(clone);
+
+        this.animating = true;
+        current.style.visibility = 'hidden';
+
+        // Force layout before animating.
+        clone.getBoundingClientRect();
+        const dx = endRect.left - startRect.left;
+        const dy = endRect.top - startRect.top;
+        clone.style.transform = `translate(${dx}px, ${dy}px)`;
+        clone.style.opacity = '0.98';
+
+        clone.addEventListener('transitionend', function handleTransition(event) {
+            if (event.propertyName !== 'transform') {
+                return;
+            }
+            clone.removeEventListener('transitionend', handleTransition);
+            clone.remove();
+            current.style.visibility = 'visible';
+
+            that.grid[r][c].dropLetter(letter);
+            that.availableLetters = that.availableLetters.replace(letter, '');
+            if (r - 1 >= 0) {
+                that.availableLetters = that.availableLetters + that.answers[r - 1].charAt(c);
+            }
+            if (that.availableLetters.length == 0) {
+                that.setCurrentLetter(' ');
+                that.endGame();
+            } else {
+                that.pickNextLetterAtRandom();
+            }
+            that.animating = false;
+        });
     }
 
     startTimerIfNotAlready() {
@@ -351,7 +396,9 @@ function init(daily) {
 
 function updateTitle(index) {
     const titleEl = document.getElementById('titleNum');
-    titleEl.textContent = "#" + index;
+    if (titleEl) {
+        titleEl.textContent = "#" + index;
+    }
 }
 
 function tryAgain(penalty) {
@@ -388,7 +435,12 @@ function toggleHelp() {
 
 function startGame(daily) {
     init(daily);
-    hide("intro");
+    document.querySelectorAll('.drop-animation').forEach(function(el) {
+        el.remove();
+    });
+    fadeOut("intro", function() {
+        show("content");
+    });
 }
 
 function fadeIn(el) {
@@ -407,7 +459,7 @@ function fadeIn(el) {
     }, 10);
 }
 
-function fadeOut(el) {
+function fadeOut(el, callback) {
     var element = el instanceof Element ? el : document.getElementById(el);
     element.style.opacity = 1;
     var op = 1; 
@@ -416,6 +468,9 @@ function fadeOut(el) {
             element.style.opacity = 0;
             element.style.display = 'none';
             clearInterval(timer);
+            if (typeof callback === 'function') {
+                callback();
+            }
         } else {
             element.style.opacity = op;
             op = op - 0.1;
