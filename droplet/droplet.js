@@ -321,13 +321,13 @@ class Board {
 
         // Force layout before animating.
         clone.getBoundingClientRect();
-        const dx = endRect.left - startRect.left;
-        const dy = endRect.top - startRect.top;
-        clone.style.transform = `translate(${dx}px, ${dy}px)`;
+        clone.style.transition = 'left 0.28s ease-out, top 0.42s cubic-bezier(0.46,0.03,0.52,0.96), opacity 0.2s ease';
+        clone.style.left = `${endRect.left}px`;
+        clone.style.top = `${endRect.top}px`;
         clone.style.opacity = '0.98';
 
         clone.addEventListener('transitionend', function handleTransition(event) {
-            if (event.propertyName !== 'transform') {
+            if (event.propertyName !== 'top') {
                 return;
             }
             clone.removeEventListener('transitionend', handleTransition);

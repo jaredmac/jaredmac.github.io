@@ -315,7 +315,7 @@ body.dark-mode {
 .drop-animation {
     position: fixed;
     z-index: 9999;
-    transition: transform 0.45s ease, opacity 0.3s ease;
+    transition: left 0.28s ease-out, top 0.42s cubic-bezier(0.46,0.03,0.52,0.96), opacity 0.2s ease;
     pointer-events: none;
 }
 
